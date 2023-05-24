@@ -1,0 +1,47 @@
+# docker-compose up --force-recreate --build
+version: "3.9"
+services:
+  anti-fraude:
+    build: anti-fraude
+    container_name: anti-fraude
+    ports:
+      - 3000:3000
+    environment:
+      MONGO_HOST: mongo-anti-fraude
+    depends_on:
+      - mongo-anti-fraude
+
+  clientes:
+    build: clientes
+    container_name: clientes
+    ports:
+      - 3001:3001
+    environment:
+      MONGO_HOST: mongo-anti-fraude
+    depends_on:
+      - mongo-anti-fraude
+
+  transacoes:
+    build: transacoes
+    container_name: transacoes
+    ports:
+      - 3002:3002
+    environment:
+      MONGO_HOST: mongo-anti-fraude
+    depends_on:
+      - mongo-anti-fraude
+
+  mongo-anti-fraude:
+    image: mongo
+    container_name: mongo-anti-fraude
+    volumes:
+      - vol-mongo-anti-fraude:/data/db
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+
+volumes:
+  vol-mongo-anti-fraude:
