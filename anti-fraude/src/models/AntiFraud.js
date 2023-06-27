@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
 
 const AntiFraudSchema = new mongoose.Schema(
-  //TO DO
+  
   {
     idCliente: {
-      type: Number,
+      type: Number,//TODO mudar type para mongoose.Schema.Types.ObjectId
       required: true
     },
     idTransação: {
-      type: Number,
+      type: Number,//TODO mudar type para mongoose.Schema.Types.ObjectId
       required: true
     },
     status: {type: String, enum: ['Em análise', 'Aprovada', 'Rejeitada']}

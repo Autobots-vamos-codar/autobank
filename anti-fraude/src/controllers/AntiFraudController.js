@@ -10,6 +10,16 @@ class AntiFraudController {
     });
   };
 
+  //TODO finalizar busca por status
+  static findAntiFraudByStatus = async (_req, res) => {
+    try {
+      const antiFraud = await AntiFraud.find({ status: 'Em análise' });
+      res.status(200).json(antiFraud);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  };
+
   static findAntiFraudById = (req, res) => {
     const { id } = req.params;
     AntiFraud.findById(id, (err, AntiFraud) => {
@@ -27,6 +37,7 @@ class AntiFraudController {
     const myAntiFraud = new AntiFraud({
       ...req.body,
       createdDate: Date(),
+      //TODO ajustar status: 'Em análise'
     });
     myAntiFraud.save((err, newAntiFraud) => {
       if (err) {
@@ -57,6 +68,7 @@ class AntiFraudController {
       return res.status(204).send({ message: 'AntiFraud successfully deleted' });
     });
   };
+
 }
 
 export default AntiFraudController;
