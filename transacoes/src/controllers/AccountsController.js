@@ -64,6 +64,11 @@ class AccountController {
       return res.status(500).send({ message: err.message });
     }
   };
+
+  static createTransaction = async (req, res) => {
+    const response = await someService.processTransaction(req);
+    // if objeto.status == Em análise {retorna algo}
+  };
 }
 
 export default AccountController;
