@@ -14,5 +14,6 @@ module.exports = {
     'import/extensions': 0,
     'prefer-destructuring': 0,
     'no-console': 0,
+    'import/no-extraneous-dependencies': ['off', 'always'],
   },
 };

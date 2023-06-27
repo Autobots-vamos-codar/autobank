@@ -24,6 +24,11 @@ class AccountController {
   };
 
   static createAccount = async (req, res) => {
+    const { senha } = req.body;
+    const custo = 12;
+    const passwordEncrypted = await bcryptjs.hash(senha, custo);
+    req.body.senha = passwordEncrypted;
+
     const account = new Account({
       ...req.body,
       createdDate: Date(),
