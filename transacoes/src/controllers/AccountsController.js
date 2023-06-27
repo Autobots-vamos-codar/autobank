@@ -1,27 +1,31 @@
 import bcryptjs from 'bcryptjs';
 import Account from '../models/Account.js';
+import MongoService from '../../../services/MongoService.mjs';
 
 class AccountController {
-  static findAccounts = (_req, res) => {
-    Account.find((err, allAccounts) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      return res.status(200).json(allAccounts);
-    });
+  static findAccounts = async (_req, res) => {
+    try {
+      const docs = await MongoService.findMany(Account, {});
+      return res.status(200).json(docs);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ message: error.message });
+    }
   };
 
-  static findAccountById = (req, res) => {
-    const { id } = req.params;
-    Account.findById(id, (err, account) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      if (!account) {
+  static findAccountById = async (req, res) => {
+    const { idDoc } = req.params;
+    try {
+      const doc = await MongoService.findOne(Account, { id: idDoc });
+
+      if (!doc) {
         return res.status(404).json();
       }
-      return res.status(200).json(account);
-    });
+      return res.status(200).json(doc);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ message: error.message });
+    }
   };
 
   static createAccount = async (req, res) => {
@@ -29,39 +33,36 @@ class AccountController {
     const custo = 12;
     const passwordEncrypted = await bcryptjs.hash(senha, custo);
     req.body.senha = passwordEncrypted;
-
-    const account = new Account({
-      ...req.body,
-      createdDate: Date(),
-    });
-    account.save((err, newAccount) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      return res.status(201).set('Location', `/admin/accounts/${account.id}`).json(newAccount);
-    });
+    try {
+      const accountCreated = await MongoService.createOne(Account, req.body);
+      return res.status(201).set('Location', `/admin/accounts/${accountCreated.id}`).json(accountCreated);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ message: error.message });
+    }
   };
 
-  static updateAccount = (req, res) => {
+  static updateAccount = async (req, res) => {
     const { id } = req.params;
-
-    Account.findByIdAndUpdate(id, { $set: req.body }, { new: true }, (err, account) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      return res.status(204).set('Location', `/admin/accounts/${account.id}`).send();
-    });
+    try {
+      const doc = await MongoService.updateOne(Account, id, req.body);
+      console.log(doc);
+      return res.status(204).set('Location', `/admin/accounts/${doc.id}`).send();
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ message: error.message });
+    }
   };
 
-  static deleteAccount = (req, res) => {
+  static deleteAccount = async (req, res) => {
     const { id } = req.params;
-
-    Account.findByIdAndDelete(id, (err) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
+    try {
+      await MongoService.deleteOne(Account, id);
       return res.status(204).send({ message: 'Account successfully deleted' });
-    });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ message: err.message });
+    }
   };
 }
 
