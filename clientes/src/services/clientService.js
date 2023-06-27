@@ -1,14 +1,16 @@
-import MongoService from '../../../services/MongoService.mjs';
+/* eslint-disable no-undef */
+/* eslint-disable no-underscore-dangle */
+import Client from '../models/Client.js';
 
 class ClienteService {
   static getUserDataWithoutAccount = async (id) => {
-    const isUserExistent = await MongoService.findById(id);
-    if (isUserExistent.id !== id) {
-      return { status: 404, message: 'cliente não encontrado' };
+    const isUserExistent = await Client.findById(id);
+    if (isUserExistent === null) {
+      return { status: 400, message: 'Cliente não encontrado!' };
     }
     const clientData = {
-      contaPessoal: isUserExistent.contaPessoal,
-      Endereco: isUserExistent.Endereco,
+      dadosPessoais: isUserExistent.dadosPessoais,
+      Endereco: isUserExistent.endereco,
     };
     return { status: 200, message: clientData };
   };

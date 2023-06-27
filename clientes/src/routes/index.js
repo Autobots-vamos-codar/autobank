@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yaml';
 
 import accounts from './accountsRoutes.js';
+import clientes from './clientRoutes.js';
 
 const file = fs.readFileSync('src/swagger/clientes.yaml', 'utf8');
 const swaggerDocument = YAML.parse(file);
@@ -18,6 +19,7 @@ const routes = (app) => {
   app.use(
     express.json(),
     accounts,
+    clientes,
   );
 };
 
