@@ -3,14 +3,14 @@ import mongoose from 'mongoose';
 const AntiFraudSchema = new mongoose.Schema(
   {
     idCliente: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Number,
       required: true
     },
     idTransação: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Number,
       required: true
     },
-    status: {type: String, enum: ["Em análise", "Aprovada", "Rejeitada"]}
+    status: {type: String, enum: ['Em análise', 'Aprovada', 'Rejeitada']}
   },
 );
 

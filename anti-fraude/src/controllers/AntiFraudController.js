@@ -24,16 +24,11 @@ class AntiFraudController {
   };
 
   static createAntiFraud = async (req, res) => {
-    const { senha } = req.body;
-    const custo = 12;
-    const passwordEncrypted = await bcryptjs.hash(senha, custo);
-    req.body.senha = passwordEncrypted;
-    
-    const AntiFraud = new AntiFraud({
+    const myAntiFraud = new AntiFraud({
       ...req.body,
       createdDate: Date(),
     });
-    AntiFraud.save((err, newAntiFraud) => {
+    myAntiFraud.save((err, newAntiFraud) => {
       if (err) {
         return res.status(500).send({ message: err.message });
       }
