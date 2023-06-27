@@ -25,11 +25,11 @@ class MongoService {
   }
 
   static async createOne(schema, body ) {
-    const account = new schema({
+    const doc = new schema({
         ...body,
         createdDate: Date(),
       });
-    return await account.save();
+    return await doc.save();
   }
 
   static async deleteMany(schema, filter) {
