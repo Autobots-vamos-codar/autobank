@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const AntiFraudSchema = new mongoose.Schema(
+  //TO DO
   {
     idCliente: {
       type: Number,
