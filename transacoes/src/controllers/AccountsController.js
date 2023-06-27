@@ -2,6 +2,7 @@ import bcryptjs from 'bcryptjs';
 import Account from '../models/Account.js';
 import MongoService from '../../../services/MongoService.mjs';
 import TransactionService from '../services/TransactionService.js';
+import TransactionService from '../services/TransactionService.js';
 
 class AccountController {
   static findAccounts = async (_req, res) => {
@@ -68,7 +69,13 @@ class AccountController {
 
   static createTransaction = async (req, res) => {
     const response = await TransactionService.processTransaction(req);
-    // if objeto.status == Em análise {retorna algo}
+    if (response.status === 'Aprovado') {
+      return res.status(200).send({ id: response.id, status: response.status });
+    } else if (response.status === 'Rejeitado') {
+      return res.status(400).send({ message: 'Os dados fornecidos estão inválidos!' });
+    }
+    // desenvolver retorno para o caso de Em análise
+    return res.status(500).send({ message: 'Account successfully deleted' });
   };
 }
 

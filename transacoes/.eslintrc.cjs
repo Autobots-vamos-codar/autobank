@@ -11,10 +11,11 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'linebreak-style': ['off', 'always'],
+    'linebreak-style': 0,
     'import/extensions': 0,
     'prefer-destructuring': 0,
     'no-console': 0,
     'import/no-extraneous-dependencies': ['off', 'always'],
+    'no-else-return': 0,
   },
 };
