@@ -1,6 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import Account from '../models/Account.js';
 import MongoService from '../../../services/MongoService.mjs';
+import TransactionService from '../services/TransactionService.js';
 
 class AccountController {
   static findAccounts = async (_req, res) => {
@@ -61,12 +62,12 @@ class AccountController {
       return res.status(204).send({ message: 'Account successfully deleted' });
     } catch (error) {
       console.log(error);
-      return res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: error.message });
     }
   };
 
   static createTransaction = async (req, res) => {
-    const response = await someService.processTransaction(req);
+    const response = await TransactionService.processTransaction(req);
     // if objeto.status == Em análise {retorna algo}
   };
 }

@@ -11,7 +11,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'linebreak-style': ['error', 'windows'],
+    'linebreak-style': ['off', 'always'],
     'import/extensions': 0,
     'prefer-destructuring': 0,
     'no-console': 0,
