@@ -10,46 +10,69 @@ class AntiFraudController {
     });
   };
 
-  static findAntiFraudById = (req, res) => {
-    const { id } = req.params;
-    AntiFraud.findById(id, (err, AntiFraud) => {
+  // TODO finalizar busca por status
+  static findAntiFraudByStatus = async (_req, res) => {
+    AntiFraud.find({ status: 'Em análise' }, (err, foundAntifraud) => {
       if (err) {
         return res.status(500).send({ message: err.message });
       }
-      if (!AntiFraud) {
+      if (!foundAntifraud) {
         return res.status(404).json();
       }
-      return res.status(200).json(AntiFraud);
+      return res.status(200).json(foundAntifraud);
+    });
+  };
+
+  static findAntiFraudById = (req, res) => {
+    const { id } = req.params;
+    AntiFraud.findById(id, (err, foundAntifraud) => {
+      if (err) {
+        return res.status(500).send({ message: err.message });
+      }
+      if (!foundAntifraud) {
+        return res.status(404).json();
+      }
+      return res.status(200).json(foundAntifraud);
     });
   };
 
   static createAntiFraud = async (req, res) => {
-    const { senha } = req.body;
-    const custo = 12;
-    const passwordEncrypted = await bcryptjs.hash(senha, custo);
-    req.body.senha = passwordEncrypted;
-    
-    const AntiFraud = new AntiFraud({
+
+    const myAntiFraud = new AntiFraud({
       ...req.body,
+      status: 'Em análise',
       createdDate: Date(),
+      // TODO ajustar status: 'Em análise'
     });
-    AntiFraud.save((err, newAntiFraud) => {
+
+    myAntiFraud.save((err, newAntiFraud) => {
       if (err) {
         return res.status(500).send({ message: err.message });
       }
-      return res.status(201).set('Location', `/antiFraud/${AntiFraud.id}`).json(newAntiFraud);
+      return res
+        .status(201)
+        .set('Location', `/antiFraud/${AntiFraud.id}`)
+        .json(newAntiFraud);
     });
   };
 
   static updateAntiFraud = (req, res) => {
     const { id } = req.params;
 
-    AntiFraud.findByIdAndUpdate(id, { $set: req.body }, { new: true }, (err, AntiFraud) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      return res.status(204).set('Location', `/antiFraud/${AntiFraud.id}`).send();
-    });
+    AntiFraud.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      { new: true },
+      (err, foundAntifraud) => {
+        if (err) {
+          return res.status(500).send({ message: err.message });
+        }
+        return res
+          .status(204)
+          .set('Location', `/antiFraud/${foundAntifraud.id}`)
+          .send();
+      },
+    );
   };
 
   static deleteAntiFraud = (req, res) => {
@@ -59,7 +82,9 @@ class AntiFraudController {
       if (err) {
         return res.status(500).send({ message: err.message });
       }
-      return res.status(204).send({ message: 'AntiFraud successfully deleted' });
+      return res
+        .status(204)
+        .send({ message: 'AntiFraud successfully deleted' });
     });
   };
 }

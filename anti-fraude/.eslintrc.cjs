@@ -4,14 +4,13 @@ module.exports = {
     node: true,
   },
   extends: 'airbnb-base',
-  overrides: [
-  ],
+  overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
   rules: {
-    'linebreak-style': ['error', 'windows'],
+    'linebreak-style': 0,
     'import/extensions': 0,
     'prefer-destructuring': 0,
     'no-console': 0,
