@@ -2,7 +2,6 @@ import bcryptjs from 'bcryptjs';
 import Account from '../models/Account.js';
 import MongoService from '../../../services/MongoService.mjs';
 import TransactionService from '../services/TransactionService.js';
-import TransactionService from '../services/TransactionService.js';
 
 class AccountController {
   static findAccounts = async (_req, res) => {

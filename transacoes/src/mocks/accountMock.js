@@ -13,8 +13,8 @@ const accountMock = {
     estado: 'SC',
   },
   cartao: {
-    numero: 1234,
-    nome: 'Lu',
+    numero: '11546468744236',
+    nome: 'ff',
     validade: '09/2024',
     cvc: 1,
     vencimentoFatura: 10,
