@@ -37,11 +37,14 @@ class AntiFraudController {
   };
 
   static createAntiFraud = async (req, res) => {
+
     const myAntiFraud = new AntiFraud({
       ...req.body,
+      status: 'Em análise',
       createdDate: Date(),
       // TODO ajustar status: 'Em análise'
     });
+
     myAntiFraud.save((err, newAntiFraud) => {
       if (err) {
         return res.status(500).send({ message: err.message });
