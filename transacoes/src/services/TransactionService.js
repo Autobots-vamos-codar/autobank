@@ -1,48 +1,35 @@
-class MongoService {
+import MongoService from '../../../services/MongoService.mjs';
+import Transaction from '../models/transaction.js';
+import accountMock from '../mocks/accountMock.js';
+
+class TransactionService {
+  static validateCardData(data) {
+    // verificar o model que o pessoal vai criar para cliente, importar ele aqui para a consulta
+    // const cardFromMongo = MongoService.findOne(Transaction, {"card.number": data.number});
+    const accountFromMongo = accountMock;
+    const card = accountFromMongo.cartao;
+    return (card.numero === data.numero && card.validade === data.validade && card.cvc === data.cvc);
+  }
+
+  static validateIncome(income, transactionValue) {
+    if (income / 2 < transactionValue) {
+      return 'Aprovado';
+    }
+    return 'Em análise';
+  }
+
+  static async saveTransaction(transactionDoc) {
+    const newDoc = await MongoService.createOne(Transaction, transactionDoc);
+    return newDoc;
+  }
+
   // static function validateData(){} -> valida os dados do body,
-  // static function validateCardData(){}
-  // static function validateIncome(){}
 
-  // static function processApprovedTransaction(){}
+  // static processApprovedTransaction(transaction) {}
+
   // static function processUnderReviewTransaction(){}
-  // static function saveTransaction(){}
 
-  static async findOne(schema, filter) {
-    const doc = await schema.findOne(filter);
-    console.log(doc);
-    return doc;
-  }
-
-  static async findMany(schema, filter) {
-    const doc = await schema.find(filter);
-    console.log(doc);
-    return doc;
-  }
-
-  static async updateOne(schema, id, update) {
-    const doc = await schema.findByIdAndUpdate(id, { $set: update });
-    return doc;
-  }
-
-  static async updateMany(schema, filter, update) {
-    return await schema.updateMany(filter, { $set: update });
-  }
-
-  static async deleteOne(schema, id) {
-    await schema.findByIdAndDelete(id);
-  }
-
-  static async createOne(schema, body) {
-    const doc = new schema({
-      ...body,
-      createdDate: Date(),
-    });
-    return await doc.save();
-  }
-
-  static async deleteMany(schema, filter) {
-    await schema.deleteMany(filter);
-  }
+  // static processTransaction(req) {}
 }
 
-export default MongoService;
+export default TransactionService;
