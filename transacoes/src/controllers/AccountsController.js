@@ -1,6 +1,6 @@
 import bcryptjs from 'bcryptjs';
 import Account from '../models/Account.js';
-import MongoService from '../../../services/MongoService.mjs';
+import MongoService from '../services/MongoService.mjs';
 import TransactionService from '../services/TransactionService.js';
 
 class AccountController {
@@ -67,14 +67,19 @@ class AccountController {
   };
 
   static createTransaction = async (req, res) => {
-    const response = await TransactionService.processTransaction(req);
-    if (response.status === 'Aprovado') {
-      return res.status(200).send({ id: response.id, status: response.status });
-    } else if (response.status === 'Rejeitado') {
+    const transaction = await TransactionService.processTransaction(req.body);
+
+    if (transaction.statusResponse === 500) {
+      return res.status(500).send({ message: 'Erro interno no servidor, os dados não foram enviados!', error: transaction.error });
+    }
+    if (transaction.statusResponse === 400) {
       return res.status(400).send({ message: 'Os dados fornecidos estão inválidos!' });
     }
+    if (transaction.statusResponse === 201) {
+      return res.status(201).send(transaction);
+    }
     // desenvolver retorno para o caso de Em análise
-    return res.status(500).send({ message: 'Account successfully deleted' });
+    return res.status(303).set('Location', 'http://localhost:3001').json(transaction);
   };
 }
 
