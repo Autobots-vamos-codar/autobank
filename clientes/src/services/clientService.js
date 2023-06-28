@@ -15,7 +15,7 @@ class ClienteService {
       };
       return { status: 200, message: clientData };
     } catch (error) {
-      return { status: 500, message: error.message };
+      return { status: 400, message: error.message };
     }
   };
 }
