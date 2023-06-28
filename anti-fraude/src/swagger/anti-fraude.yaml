@@ -4,6 +4,8 @@ info:
   description: |-
     API do microsserviço de Anti Fraude
   version: 0.0.1
+servers:
+  - url: http://localhost:3000
 paths:
   /api/antiFraud:
     get:
