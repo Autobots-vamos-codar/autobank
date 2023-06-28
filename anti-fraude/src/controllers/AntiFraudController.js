@@ -1,16 +1,17 @@
 import AntiFraud from '../models/AntiFraud.js';
 
 class AntiFraudController {
-  static findAntiFraud = (_req, res) => {
-    AntiFraud.find((err, allAntiFrauds) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      return res.status(200).json(allAntiFrauds);
-    });
+  static findAllAntiFraud = async (_req, res) => {
+    try {
+      const allFraud = await AntiFraud.find();
+      res.status(200).json(allFraud);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
   };
 
   // TODO finalizar busca por status
+  // eslint-disable-next-line consistent-return
   static findAnalysisUnderReview = async (_req, res) => {
     try {
       const antiFraudePorStatus = await AntiFraud.find({ status: 'Em análise' });
@@ -20,68 +21,63 @@ class AntiFraudController {
     }
   };
 
-  static findAntiFraudById = (req, res) => {
-    const { id } = req.params;
-    AntiFraud.findById(id, (err, foundAntifraud) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
+  static findAntiFraudById = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const findById = await AntiFraud.findById(id);
+      if (!findById) {
+        res.status(400).send({ message: 'Anti fraude nao encontrada' });
+      } else {
+        //
+        console.log('entrou');
       }
-      if (!foundAntifraud) {
-        return res.status(404).json();
-      }
-      return res.status(200).json(foundAntifraud);
-    });
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
   };
 
   static createAntiFraud = async (req, res) => {
-    const myAntiFraud = new AntiFraud({
-      ...req.body,
-      status: 'Under review', // todo change para em analise
-      createdDate: Date(),
-      // TODO ajustar status: 'Em análise'
-    });
-
-    myAntiFraud.save((err, newAntiFraud) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      return res
-        .status(201)
-        .set('Location', `/antiFraud/${AntiFraud.id}`)
-        .json(newAntiFraud);
-    });
+    try {
+      const infoAntiFraude = { ...req.body, status: 'Em análise' };
+      const novaAntifraude = new AntiFraud(infoAntiFraude);
+      await novaAntifraude.save();
+      res.status(201).json(novaAntifraude);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
   };
 
-  static updateAntiFraud = (req, res) => {
-    const { id } = req.params;
-
-    AntiFraud.findByIdAndUpdate(
-      id,
-      { $set: req.body },
-      { new: true },
-      (err, foundAntifraud) => {
-        if (err) {
-          return res.status(500).send({ message: err.message });
-        }
-        return res
-          .status(204)
-          .set('Location', `/antiFraud/${foundAntifraud.id}`)
-          .send();
-      },
-    );
+  static updateAntiFraud = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const atualizaAntifraude = await AntiFraud.findByIdAndUpdate(
+        id,
+        { $set: { status } },
+        { new: true },
+      );
+      if (!atualizaAntifraude) {
+        res.status(404).send({ message: 'anti fraude nao encontrada' });
+      } else {
+        res.status(200).json(atualizaAntifraude);
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
   };
 
-  static deleteAntiFraud = (req, res) => {
-    const { id } = req.params;
-
-    AntiFraud.findByIdAndDelete(id, (err) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
+  static deleteAntiFraud = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deletaAntifraude = await AntiFraud.findByIdAndDelete(id);
+      if (!deletaAntifraude) {
+        res.status(404).send({ message: 'anti fraude nao encontrada' });
+      } else {
+        res.status(204).send({ message: 'anti fraude nao encontrada' });
       }
-      return res
-        .status(204)
-        .send({ message: 'AntiFraud successfully deleted' });
-    });
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
   };
 }
 
