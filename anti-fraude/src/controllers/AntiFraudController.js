@@ -11,16 +11,13 @@ class AntiFraudController {
   };
 
   // TODO finalizar busca por status
-  static findAntiFraudByStatus = async (_req, res) => {
-    AntiFraud.find({ status: 'Em análise' }, (err, foundAntifraud) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      if (!foundAntifraud) {
-        return res.status(404).json();
-      }
-      return res.status(200).json(foundAntifraud);
-    });
+  static findAnalysisUnderReview = async (_req, res) => {
+    try {
+      const antiFraudePorStatus = await AntiFraud.find({ status: 'Em análise' });
+      res.status(200).json(antiFraudePorStatus);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
   };
 
   static findAntiFraudById = (req, res) => {
@@ -37,12 +34,11 @@ class AntiFraudController {
   };
 
   static createAntiFraud = async (req, res) => {
-
     const myAntiFraud = new AntiFraud({
       ...req.body,
-      status: 'Em análise',
+      status: 'Under review', // todo change para em analise
       createdDate: Date(),
-      // TODO ajustar status: 'Em análise'
+
     });
 
     myAntiFraud.save((err, newAntiFraud) => {
