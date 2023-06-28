@@ -4,11 +4,13 @@ info:
   description: |-
     API do microsserviço de Clientes
   version: 0.0.1
+servers:
+  - url: http://localhost:3002
 paths:
-  /api/admin/accounts:
+  /api/admin/transactions:
     get:
-      summary: List accounts
-      description: List all accounts
+      summary: List transactions
+      description: List all transactions
       responses:
         '200':
           description: ok
@@ -17,32 +19,32 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Account"
-    post:
-      summary: Add account
-      description: Add new account
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Account"
-      responses:
-        '201':
-          description: created
-          content:
-            application/json:
-              schema:
-                  $ref: "#/components/schemas/Account"
-        '401':
-          description: unauthorized
-  /api/admin/accounts/{id}:
+                  $ref: "#/components/schemas/Transaction"
+    # post:
+    #   summary: Add transaction
+    #   description: Add new transaction
+    #   requestBody:
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: "#/components/schemas/Transaction"
+    #   responses:
+    #     '201':
+    #       description: created
+    #       content:
+    #         application/json:
+    #           schema:
+    #               $ref: "#/components/schemas/Transaction"
+    #     '401':
+    #       description: unauthorized
+  /api/admin/transactions/{id}:
     get:
-      summary: Find account
-      description: Find one specific account
+      summary: Find transaction
+      description: Find one specific transaction
       parameters:
         - name: id
           in: path
-          description: ID of account that needs to be fetched
+          description: ID of transaction that needs to be fetched
           required: true
           schema:
             type: string
@@ -52,14 +54,14 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/Account"
+                  $ref: "#/components/schemas/Transaction"
         '400':
           description: invalid ID supplied
         '404':
           description: not found
     put:
-      summary: Update account
-      description: Update account by entering the whole updated account
+      summary: Update transaction status
+      description: Update transaction status by a new status on query
       parameters:
       - name: id
         in: path
@@ -67,51 +69,49 @@ paths:
         required: true
         schema:
           type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-                $ref: "#/components/schemas/Account"
-      responses:
-        '200':
-          description: ok
-          content:
-            application/json:
-              schema:
-                  $ref: "#/components/schemas/Account"
-        '400':
-          description: invalid ID supplied
-        '401':
-          description: unauthorized
-    delete:
-      summary: Delete account
-      description: Delete account by entering its ID
-      parameters:
-      - name: id
-        in: path
-        description: ID of account that needs to be deleted
+      - name: status
+        in: query
+        description: New status of the transaction
         required: true
         schema:
           type: string
       responses:
         '204':
-          description: no content
+          description: ok
+        '400':
+          description: invalid id or status
         '401':
           description: unauthorized
-        '400':
-          description: invalid ID supplied
+    # delete:
+    #   summary: Delete account
+    #   description: Delete account by entering its ID
+    #   parameters:
+    #   - name: id
+    #     in: path
+    #     description: ID of account that needs to be deleted
+    #     required: true
+    #     schema:
+    #       type: string
+    #   responses:
+    #     '204':
+    #       description: no content
+    #     '401':
+    #       description: unauthorized
+    #     '400':
+    #       description: invalid ID supplied
 components:
   schemas:
-    Account:
+    Transaction:
       type: object
       properties:
         id:
           type: string
-        nome:
+        nome_titular:
           type: string
-        email:
+        valor:
+          type: number
+          format: double
+        status:
           type: string
-          format: email
-        senha:
+        clientId:
           type: string
-          format: password
