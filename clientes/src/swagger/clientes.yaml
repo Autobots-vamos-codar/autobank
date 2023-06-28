@@ -4,9 +4,18 @@ info:
   description: |-
     API do microsserviço de Clientes
   version: 0.0.1
+servers:
+  - url: http://localhost:3001
+tags:
+  - name: accounts
+    description: Informações sobre as contas
+  - name: clients
+    description: Informações sobre os clientes
 paths:
   /api/admin/accounts:
     get:
+      tags:
+        - accounts
       summary: List accounts
       description: List all accounts
       responses:
@@ -19,6 +28,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/Account"
     post:
+      tags:
+        - accounts
       summary: Add account
       description: Add new account
       requestBody:
@@ -37,6 +48,8 @@ paths:
           description: unauthorized
   /api/admin/accounts/{id}:
     get:
+      tags:
+        - accounts
       summary: Find account
       description: Find one specific account
       parameters:
@@ -58,6 +71,8 @@ paths:
         '404':
           description: not found
     put:
+      tags:
+        - accounts
       summary: Update account
       description: Update account by entering the whole updated account
       parameters:
@@ -84,6 +99,8 @@ paths:
         '401':
           description: unauthorized
     delete:
+      tags:
+        - accounts
       summary: Delete account
       description: Delete account by entering its ID
       parameters:
@@ -100,6 +117,31 @@ paths:
           description: unauthorized
         '400':
           description: invalid ID supplied
+  /api/admin/clients/{id}:
+    get:
+      tags:
+      - clients
+      summary: Find client
+      description: Find one specific client
+      parameters:
+        - name: id
+          in: path
+          description: ID of client that needs to be fetched
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/Client"
+        '400':
+          description: invalid ID supplied
+        '404':
+          description: not found
+
 components:
   schemas:
     Account:
@@ -115,3 +157,93 @@ components:
         senha:
           type: string
           format: password
+    Client:
+      type: object
+      properties:
+        dadosPessoais:
+          type: object
+          properties:
+            nome:
+              type: string
+              example: "Aurora Sabrina Ramos"
+            cpf:
+              type: string
+              example: "41286390958"
+            email:
+              type: string
+              format: email
+              example: "aurora.ramos@cathedranet.com.br"
+            telefone:
+              type: string
+              example: "6127726328"
+            rendaMensal:
+              type: number
+              example: 7300
+        endereco:
+          type: object
+          properties:
+            rua:
+              type: string
+              example: "Rua Adilson Lisboa"
+            numero:
+              type: string
+              example: "167"
+            complemento:
+              type: string
+              nullable: true
+              example: "ap22"
+            cep:
+              type: string
+              example: "21073090"
+            cidade:
+              type: string
+              example: "Rio de Janeiro"
+            estado:
+              type: string
+              enum:
+              - AC
+              - AL
+              - AP
+              - AM
+              - BA
+              - CE
+              - DF
+              - ES
+              - GO
+              - MA
+              - MT
+              - MS
+              - MG
+              - PA
+              - PB
+              - PR
+              - PE
+              - PI
+              - RJ
+              - RN
+              - RS
+              - RO
+              - RR
+              - SC
+              - SP
+              - SE
+              - TO
+              example: "RJ"
+        dadosCartao:
+          type: object
+          properties:
+            numeroCartao:
+              type: string
+              example: "5243777021004048"
+            nomeCartao:
+              type: string
+              example: "AURORA S RAMOS"
+            validade:
+              type: string
+              example: "02/25"
+            cvc:
+              type: number
+              example: 448
+            diaVencimentoFatura:
+              type: number
+              example: 5
