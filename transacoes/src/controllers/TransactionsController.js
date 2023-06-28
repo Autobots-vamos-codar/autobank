@@ -1,4 +1,5 @@
 import bcryptjs from 'bcryptjs';
+import mongoose from 'mongoose';
 import Account from '../models/Account.js';
 import MongoService from '../services/MongoService.mjs';
 import Transaction from '../models/transaction.js';
@@ -21,9 +22,9 @@ class TransactionsController {
   // Método que busca uma transação por id
   static findTransactionById = async (req, res) => {
     console.log('Procurando transações por id');
-    const { idDoc } = req.params;
+    const idDoc = req.params.id;
     try {
-      const doc = await MongoService.findOne(Transaction, { id: idDoc });
+      const doc = await MongoService.findOne(Transaction, { _id: mongoose.Types.ObjectId(idDoc) });
 
       if (!doc) {
         return res.status(404).json();
@@ -103,6 +104,7 @@ class TransactionsController {
       }
     }
     console.log('Retorna 303');
+    console.log(transaction.id);
     return res.status(303).set('Location', `http://localhost:3002/api/admin/transactions/${transaction.id}`).json(transaction);
   };
 }

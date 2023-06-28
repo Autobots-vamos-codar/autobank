@@ -20,7 +20,7 @@ class TransactionService {
     try {
       // Esperar time de clientes fazer rota de validação de dados
       console.log('Buscando dados de usuário');
-      const idUser = '649c32ed0e82d35a39dcc5d0';
+      const idUser = '649c85f8d1ff306ce5d88226';
       const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`;
       console.log(url);
       const responseUser = await fetch(url);

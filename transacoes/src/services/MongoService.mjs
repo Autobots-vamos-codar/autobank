@@ -1,6 +1,6 @@
 class MongoService {
   static async findOne(schema, filter) {
-    const doc = await schema.findOne(filter);
+    const doc = await schema.findById(filter);
     console.log(doc);
     return doc;
   }
