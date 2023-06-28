@@ -1,14 +1,16 @@
 openapi: 3.0.3
 info:
-  title: Clientes API
+  title: Anti Fraude API
   description: |-
-    API do microsserviço de Clientes
+    API do microsserviço de Anti Fraude
   version: 0.0.1
+servers:
+  - url: http://localhost:3000
 paths:
-  /api/admin/accounts:
+  /api/antiFraud:
     get:
-      summary: List accounts
-      description: List all accounts
+      summary: list Antifraud
+      description: list all antifraud
       responses:
         '200':
           description: ok
@@ -17,32 +19,45 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Account"
+                  $ref: "#/components/schemas/AntiFraud"
     post:
-      summary: Add account
-      description: Add new account
+      summary: Add Antifraud
+      description: Add new Antifraud
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Account"
+              $ref: "#/components/schemas/AntiFraud"
       responses:
         '201':
           description: created
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/Account"
-        '401':
-          description: unauthorized
-  /api/admin/accounts/{id}:
+                  $ref: "#/components/schemas/AntiFraud"
+        '500':
+          description: error
+  /api/antiFraud/under-review:
     get:
-      summary: Find account
-      description: Find one specific account
+      summary: list Antifraud with status under review
+      description: list antifraud with status under review
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AntiFraud"
+  /api/antiFraud/{id}:
+    get:
+      summary: Find antifraud by id
+      description: Find one specific antifraud
       parameters:
         - name: id
           in: path
-          description: ID of account that needs to be fetched
+          description: ID of antifraud that needs to be fetched
           required: true
           schema:
             type: string
@@ -52,18 +67,18 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/Account"
+                  $ref: "#/components/schemas/AntiFraud"
         '400':
-          description: invalid ID supplied
-        '404':
           description: not found
+        '500':
+          description: error
     put:
-      summary: Update account
-      description: Update account by entering the whole updated account
+      summary: Update antifraud
+      description: Update antifraud by entering the whole updated antifraud data
       parameters:
       - name: id
         in: path
-        description: ID of account that needs to be updated
+        description: ID of antifraud that needs to be updated
         required: true
         schema:
           type: string
@@ -71,47 +86,45 @@ paths:
         content:
           application/json:
             schema:
-                $ref: "#/components/schemas/Account"
+                $ref: "#/components/schemas/AntiFraud"
       responses:
         '200':
           description: ok
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/Account"
+                  $ref: "#/components/schemas/AntiFraud"
         '400':
-          description: invalid ID supplied
-        '401':
-          description: unauthorized
+          description: not faund
+        '500':
+          description: error
     delete:
-      summary: Delete account
-      description: Delete account by entering its ID
+      summary: Delete antifraud
+      description: Delete antifraud by entering its ID
       parameters:
       - name: id
         in: path
-        description: ID of account that needs to be deleted
+        description: ID of antifraud that needs to be deleted
         required: true
         schema:
           type: string
       responses:
         '204':
           description: no content
-        '401':
-          description: unauthorized
-        '400':
-          description: invalid ID supplied
+        '404':
+          description: not found
+        '500':
+          description: error
 components:
   schemas:
-    Account:
+    AntiFraud:
       type: object
       properties:
         id:
           type: string
-        nome:
+        clientId:
           type: string
-        email:
+        transactionId:
           type: string
-          format: email
-        senha:
+        status:
           type: string
-          format: password

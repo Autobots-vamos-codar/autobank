@@ -27,10 +27,13 @@ services:
     ports:
       - 3002:3002
     environment:
-      MONGO_HOST: mongo-anti-fraude
       CLIENTS_HOST: clientes
+      MONGO_HOST: mongo-transacoes
+      MONGO_PORT: 27018
     depends_on:
-      - mongo-anti-fraude
+      - mongo-transacoes
+    networks:
+     - transactions-bridge
 
   mongo-anti-fraude:
     image: mongo
@@ -44,5 +47,24 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: secret
 
+  mongo-transacoes:
+    image: mongo
+    container_name: mongo-transacoes
+    volumes:
+      - vol-mongo-transacoes:/data/db
+    restart: always
+    ports:
+      - 27018:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    networks:
+     - transactions-bridge
+
 volumes:
   vol-mongo-anti-fraude:
+  vol-mongo-transacoes:
+
+networks:
+  transactions-bridge:
+    driver: bridge

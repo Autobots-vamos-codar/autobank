@@ -3,7 +3,7 @@ import fs from 'fs';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yaml';
 
-import antiFraud from './antiFraudRoutes.js';
+import antiFraudRoutes from './antiFraudRoutes.js';
 
 const file = fs.readFileSync('src/swagger/anti-fraude.yaml', 'utf8');
 const swaggerDocument = YAML.parse(file);
@@ -15,10 +15,9 @@ const routes = (app) => {
     res.status(200).send({ titulo: 'Anti-Fraude API' });
   });
 
-  app.use(
-    express.json(),
-    antiFraud,
-  );
+  app.use(express.json());
+
+  app.use(antiFraudRoutes);
 };
 
 export default routes;
