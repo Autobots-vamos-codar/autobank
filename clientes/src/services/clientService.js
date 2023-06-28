@@ -18,14 +18,14 @@ function validExpirationDate(validity) {
   const actualMonth = getActualDate.getMonth() + 2;
 
   if (cardExpiryMonth < actualMonth && cardExpiryYear <= actualYear) {
-    return { status: 400, message: 'Cartão expirado' };
+    return false;
   }
   return true;
 }
 
 function validUserData(cardName, cvc, validity, user) {
   if (cardName !== user.dadosCartao.nomeCartao || cvc !== user.dadosCartao.cvc || validity !== user.dadosCartao.validade) {
-    return { status: 400, message: 'Dados Inválidos' };
+    return false;
   }
   return { id: user._id };
 }
@@ -49,13 +49,21 @@ class ClienteService {
   static validDataAtDatabase = async (user) => {
     try {
       const userData = user;
+
       const isUserDataValid = await Client.findOne({ 'dadosCartao.numeroCartao': userData.numeroCartao });
       if (isUserDataValid === null) {
         return { status: 404, message: 'cliente não encontrado' };
       }
-      validExpirationDate(userData.validade);
+      const validateData = validExpirationDate(userData.validade);
+      if (validateData === false) {
+        return { status: 401, message: 'Cartão expirado' };
+      }
       const validData = validUserData(userData.nomeCartao, userData.cvc, userData.validade, isUserDataValid);
-      return { status: 200, message: validData };
+      if (validData === false) {
+        return { status: 400, message: 'Dados Inválidos' };
+      }
+
+      return { status: 200, message: { userId: validData.id } };
     } catch (error) {
       return { status: 500, message: error.message };
     }
