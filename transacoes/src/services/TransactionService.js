@@ -2,6 +2,16 @@ import MongoService from './MongoService.js';
 import Transaction from '../models/transaction.js';
 import accountMock from '../mocks/accountMock.js';
 
+function isValidateStatusToUpdate(oldStatus, newStatus) {
+  console.log(`${oldStatus} - ${newStatus}`);
+  if (oldStatus.toLowerCase() === 'em análise') {
+    if (newStatus.toLowerCase() === 'aprovada' || newStatus.toLowerCase() === 'rejeitada') {
+      return true;
+    }
+  }
+  return false;
+}
+
 class TransactionService {
   // eslint-disable-next-line no-unused-vars
   static validateCardData(data) {
@@ -91,6 +101,19 @@ class TransactionService {
   // static function processUnderReviewTransaction(){}
 
   // static processTransaction(req) {}
+
+  static async processUpdateStatus(id, newStatus) {
+    const transaction = await MongoService.findOne(Transaction, { _id: id });
+    console.log(transaction);
+    if (isValidateStatusToUpdate(transaction.status, newStatus)) {
+      const doc = await MongoService.updateOne(Transaction, id, { status: newStatus });
+      console.log(doc);
+      return;
+    }
+
+    throw new Error('Status inválido para atualização. O status atual não permite '
+    + 'atualizações ou o status enviado é inválido.');
+  }
 }
 
 console.log(TransactionService.validateCardData('teste'));

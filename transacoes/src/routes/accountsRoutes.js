@@ -1,13 +1,13 @@
 import express from 'express';
-import AccountController from '../controllers/AccountsController.js';
+import TransactionController from '../controllers/TransactionsController.js';
 
 const router = express.Router();
 
 router
-  .get('/api/admin/transactions', AccountController.findTransactions)
-  .get('/api/admin/transactions/:id', AccountController.findTransactionById)
-  .post('/api/admin/accounts', AccountController.createAccount)
-  .put('/api/admin/accounts/:id', AccountController.updateAccount)
-  .delete('/api/admin/accounts/:id', AccountController.deleteAccount);
+  .get('/api/admin/transactions', TransactionController.findTransactions)
+  .get('/api/admin/transactions/:id', TransactionController.findTransactionById)
+  .post('/api/admin/accounts', TransactionController.createAccount)
+  .put('/api/admin/transactions/status/:id', TransactionController.updateTransactionStatus)
+  .delete('/api/admin/accounts/:id', TransactionController.deleteAccount);
 
 export default router;

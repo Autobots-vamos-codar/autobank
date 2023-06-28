@@ -7,8 +7,10 @@ import TransactionService from '../services/TransactionService.js';
 class TransactionsController {
   // Método que busca todas as transações na base mongo
   static findTransactions = async (_req, res) => {
+    console.log('Procurando transações');
     try {
       const docs = await MongoService.findMany(Transaction, {});
+      console.log(docs);
       return res.status(200).json(docs);
     } catch (error) {
       console.log(error);
@@ -18,6 +20,7 @@ class TransactionsController {
 
   // Método que busca uma transação por id
   static findTransactionById = async (req, res) => {
+    console.log('Procurando transações por id');
     const { idDoc } = req.params;
     try {
       const doc = await MongoService.findOne(Transaction, { id: idDoc });
@@ -46,15 +49,23 @@ class TransactionsController {
     }
   };
 
-  static updateAccount = async (req, res) => {
+  static updateTransactionStatus = async (req, res) => {
     const { id } = req.params;
-    try {
+    const status = req.query.status;
+    /* try {
       const doc = await MongoService.updateOne(Account, id, req.body);
       console.log(doc);
       return res.status(204).set('Location', `/admin/accounts/${doc.id}`).send();
     } catch (error) {
       console.log(error);
       return res.status(500).send({ message: error.message });
+    } */
+
+    try {
+      await TransactionService.processUpdateStatus(id, status);
+      return res.status(204).send();
+    } catch (error) {
+      return res.status(400).send({ message: error.message });
     }
   };
 

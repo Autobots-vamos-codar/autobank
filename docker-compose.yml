@@ -28,6 +28,7 @@ services:
       - 3002:3002
     environment:
       MONGO_HOST: mongo-transacoes
+      MONGO_PORT: 27017
     depends_on:
       - mongo-transacoes
     networks:
