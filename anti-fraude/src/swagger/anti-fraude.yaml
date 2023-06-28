@@ -1,14 +1,14 @@
 openapi: 3.0.3
 info:
-  title: Clientes API
+  title: Anti Fraude API
   description: |-
-    API do microsserviço de Clientes
+    API do microsserviço de Anti Fraude
   version: 0.0.1
 paths:
   /api/admin/accounts:
     get:
-      summary: List accounts
-      description: List all accounts
+      summary: listar anti fraude
+      description: listar todas 
       responses:
         '200':
           description: ok

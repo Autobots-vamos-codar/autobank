@@ -10,13 +10,18 @@ class AntiFraudController {
     }
   };
 
-  // TODO finalizar busca por status
-  // eslint-disable-next-line consistent-return
-  static findAnalysisUnderReview = async (_req, res) => {
+  static findAntiFraudUnderReview = async (_req, res) => {
     try {
       const antiFraudePorStatus = await AntiFraud.find({ status: 'Em análise' });
-      res.status(200).json(antiFraudePorStatus);
+      const data = antiFraudePorStatus.map((item) => ({
+        id: item.id,
+        clientId: item.clientId,
+        transactionId: item.transactionId,
+        status: item.status,
+      }));
+      res.status(200).json(data);
     } catch (err) {
+      console.log(err);
       res.status(500).send({ message: err.message });
     }
   };
@@ -28,7 +33,7 @@ class AntiFraudController {
       if (!findById) {
         res.status(400).send({ message: 'Anti fraude nao encontrada' });
       } else {
-        //
+        // TODO consumir api
         console.log('entrou');
       }
     } catch (err) {
