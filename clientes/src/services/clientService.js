@@ -7,7 +7,7 @@ class ClienteService {
     try {
       const isUserExistent = await Client.findById(id);
       if (isUserExistent === null) {
-        return { status: 400, message: 'cliente não encontrado' };
+        return { status: 404, message: 'cliente não encontrado' };
       }
       const clientData = {
         dadosPessoais: isUserExistent.dadosPessoais,
