@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 import AntiFraud from '../models/AntiFraud.js';
 
 class AntiFraudController {
@@ -10,13 +11,18 @@ class AntiFraudController {
     }
   };
 
-  // TODO finalizar busca por status
-  // eslint-disable-next-line consistent-return
-  static findAnalysisUnderReview = async (_req, res) => {
+  static findAntiFraudUnderReview = async (_req, res) => {
     try {
       const antiFraudePorStatus = await AntiFraud.find({ status: 'Em análise' });
-      res.status(200).json(antiFraudePorStatus);
+      const data = antiFraudePorStatus.map((item) => ({
+        id: item.id,
+        clientId: item.clientId,
+        transactionId: item.transactionId,
+        status: item.status,
+      }));
+      res.status(200).json(data);
     } catch (err) {
+      console.log(err);
       res.status(500).send({ message: err.message });
     }
   };
@@ -25,11 +31,15 @@ class AntiFraudController {
     try {
       const { id } = req.params;
       const findById = await AntiFraud.findById(id);
+      console.log(findById.id);
+
       if (!findById) {
         res.status(400).send({ message: 'Anti fraude nao encontrada' });
       } else {
-        //
-        console.log('entrou');
+        const response = await fetch(`http://localhost:3001/api/admin/accounts/${findById.clientId}`);
+        const accounts = await response.json();
+        console.log(accounts);
+        res.status(200).json(findById);
       }
     } catch (err) {
       res.status(500).send({ message: err.message });
