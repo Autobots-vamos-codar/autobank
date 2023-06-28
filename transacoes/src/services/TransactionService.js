@@ -17,17 +17,30 @@ class TransactionService {
   // eslint-disable-next-line no-unused-vars
 
   static async validateIncome(datasTransaction) {
-    const idUser = '649c32ed0e82d35a39dcc5d0';
-    const responseUser = await fetch(`http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`);
-    const user = await responseUser.json();
+    try {
+      // Esperar time de clientes fazer rota de validação de dados
+      console.log('Buscando dados de usuário');
+      const idUser = '649c32ed0e82d35a39dcc5d0';
+      const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`;
+      console.log(url);
+      const responseUser = await fetch(url);
+      const user = await responseUser.json();
+      console.log(user.rendaMensal);
 
-    const income = user.dadosPessoais.renda_mensal;
-    const transactionValue = datasTransaction.valorTransacao;
+      const income = user.dadosPessoais.rendaMensal.$numberDecimal;
+      const transactionValue = datasTransaction.valorTransacao;
 
-    if (income / 2 < transactionValue) {
-      return this.processUnderReviewTransaction(datasTransaction, idUser);
+      console.log(`Renda mensal = ${income} valor transação ${transactionValue}`);
+      if (income / 2 < transactionValue) {
+        console.log('Processando transação em análise');
+        return this.processUnderReviewTransaction(datasTransaction, idUser);
+      }
+      console.log('Processando transação em análise');
+      return this.processApprovedTransaction(datasTransaction, idUser);
+    } catch (error) {
+      console.log(error);
+      return null;
     }
-    return this.processApprovedTransaction(datasTransaction, idUser);
   }
 
   static hasTheRequiredTransactionData(datasTransaction) {
@@ -35,27 +48,33 @@ class TransactionService {
     const dataTransaction = Object.keys(datasTransaction);
     const hasTheDatas = transactionDataRequired.every((data) => dataTransaction.includes(data));
 
+    console.log('Antes de validar dados');
     if (!hasTheDatas) {
+      console.log('Erro na validação de dados do cartão');
       return { statusResponse: 400 };
     }
-
+    console.log('Objeto valido até aqui');
     return this.validateIncome(datasTransaction);
   }
 
   static async requireID(datasOfTransaction) {
     try {
-      const reqIDToServiceClient = await fetch(`http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients`, {
+      const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients`;
+      // console.log(url);
+      const reqIDToServiceClient = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(datasOfTransaction),
         headers: {
           'Content-Type': 'application/json',
         },
       });
+      console.log(reqIDToServiceClient);
 
       const idUser = await reqIDToServiceClient.json();
 
       return idUser;
     } catch (error) {
+      console.log(error);
       return { error: error.message, statusResponse: 500 };
     }
   }
@@ -63,7 +82,9 @@ class TransactionService {
   static async sendDataToServiceAntFraude(datasOfTransaction) {
     try {
       const { clientId, _id } = datasOfTransaction;
-      await fetch(`http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3000/api/antiFraud`, {
+      const url = `http://${process.env.ANTI_FRAUDE_HOST || '127.0.0.1'}:3000/api/antiFraud`;
+      console.log(url);
+      await fetch(url, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -72,13 +93,15 @@ class TransactionService {
         body: JSON.stringify({ clientId, transactionId: _id }),
       });
 
-      return 'Sucesso';
+      return { statusResponse: 303, id: _id };
     } catch (error) {
+      console.log(error);
       return { error: error.message, statusResponse: 500 };
     }
   }
 
   static async validateDataOfTransaction(datasOfTransaction) {
+    console.log('Validando dados da transação');
     const datasValid = this.hasTheRequiredTransactionData(datasOfTransaction);
 
     return datasValid;
@@ -86,13 +109,12 @@ class TransactionService {
 
   static async processApprovedTransaction(datasTransaction, idUser) {
     const dataTransaction = {
-      status: 'Aprovado',
+      status: 'Aprovada',
       valor: datasTransaction.valorTransacao,
       nome_titular: datasTransaction.nome_titular,
       clientId: idUser,
     };
-    const saved = await this.saveTransaction(dataTransaction);
-
+    await this.saveTransaction(dataTransaction);
     return { status: 'Aprovado', idUser, statusResponse: 201 };
   }
 
@@ -106,10 +128,19 @@ class TransactionService {
     const saved = await this.saveTransaction(dataTransaction);
     const submitToAntiFraudService = await this.sendDataToServiceAntFraude(saved);
 
-    if (typeof (submitToAntiFraudService) !== 'object') {
-      return {
-        status: 'Em análise', idUser, statusResponse: 303, message: 'Transação executada com sucesso!',
-      };
+    // console.log(`Objeto subbmit = ${submitToAntiFraudService}`);
+    // if (typeof (submitToAntiFraudService) !== 'object') {
+    //   return {
+    //     status: 'Em análise',
+    //     idUser, statusResponse: 303,
+    //     message: 'Transação executada com sucesso!',
+    //     id: saved.id,
+    //   };
+    // }
+
+    if (!submitToAntiFraudService.error) {
+      submitToAntiFraudService.status = 'Em análise';
+      submitToAntiFraudService.message = 'Transação executada com sucesso!';
     }
 
     return submitToAntiFraudService;
@@ -118,14 +149,17 @@ class TransactionService {
   static async saveTransaction(transactionDoc) {
     try {
       const newDoc = await Transaction({ ...transactionDoc, createdDate: Date() });
+      console.log(`Transação salva, novo arquivo = ${newDoc}`);
       await newDoc.save();
       return newDoc;
     } catch (error) {
+      console.log(error);
       return { error: error.message, statusResponse: 500 };
     }
   }
 
   static async processTransaction(transactionBody) {
+    console.log('Processando transação');
     const transaction = await this.validateDataOfTransaction(transactionBody);
     return transaction;
   }
