@@ -27,7 +27,7 @@ class TransactionService {
     if (income / 2 < transactionValue) {
       return this.processUnderReviewTransaction(datasTransaction, idUser);
     }
-    return this.processApprovedTransaction(idUser);
+    return this.processApprovedTransaction(datasTransaction, idUser);
   }
 
   static hasTheRequiredTransactionData(datasTransaction) {
@@ -84,8 +84,14 @@ class TransactionService {
     return datasValid;
   }
 
-  static async processApprovedTransaction(idUser) {
-    await this.saveTransaction({ status: 'Aprovado', idUser });
+  static async processApprovedTransaction(datasTransaction, idUser) {
+    const dataTransaction = {
+      status: 'Aprovado',
+      valor: datasTransaction.valorTransacao,
+      nome_titular: datasTransaction.nome_titular,
+      clientId: idUser,
+    };
+    const saved = await this.saveTransaction(dataTransaction);
 
     return { status: 'Aprovado', idUser, statusResponse: 201 };
   }
@@ -100,7 +106,7 @@ class TransactionService {
     const saved = await this.saveTransaction(dataTransaction);
     const submitToAntiFraudService = await this.sendDataToServiceAntFraude(saved);
 
-    if (typeof(submitToAntiFraudService) !== 'object') {
+    if (typeof (submitToAntiFraudService) !== 'object') {
       return {
         status: 'Em análise', idUser, statusResponse: 303, message: 'Transação executada com sucesso!',
       };
