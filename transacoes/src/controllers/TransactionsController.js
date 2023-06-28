@@ -81,8 +81,12 @@ class TransactionsController {
   };
 
   static createTransaction = async (req, res) => {
+    console.log('Iniciando createTransaction');
     const transaction = await TransactionService.processTransaction(req.body);
-
+    console.log(transaction);
+    if (!transaction.statusResponse) {
+      return res.status(500).send({ message: 'Erro interno no servidor, os dados não foram enviados!', error: transaction.error });
+    }
     if (transaction.statusResponse === 500) {
       return res.status(500).send({ message: 'Erro interno no servidor, os dados não foram enviados!', error: transaction.error });
     }
@@ -92,8 +96,14 @@ class TransactionsController {
     if (transaction.statusResponse === 201) {
       return res.status(201).send(transaction);
     }
-    // desenvolver retorno para o caso de Em análise
-    return res.status(303).set('Location', 'http://localhost:3001').json(transaction);
+    if (transaction.statusResponse === 303) {
+      if (transaction.error) {
+        console.log('Retorna 500');
+        return res.status(500).set().json(transaction);
+      }
+    }
+    console.log('Retorna 303');
+    return res.status(303).set('Location', `http://localhost:3002/api/admin/transactions/${transaction.id}`).json(transaction);
   };
 }
 
