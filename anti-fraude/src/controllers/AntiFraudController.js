@@ -31,7 +31,7 @@ class AntiFraudController {
     try {
       const { id } = req.params;
       const findById = await AntiFraud.findById(id);
-      console.log(findById.id)
+      console.log(findById.id);
 
       if (!findById) {
         res.status(400).send({ message: 'Anti fraude nao encontrada' });
