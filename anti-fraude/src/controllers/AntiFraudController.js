@@ -38,7 +38,7 @@ class AntiFraudController {
       ...req.body,
       status: 'Under review', // todo change para em analise
       createdDate: Date(),
-
+      // TODO ajustar status: 'Em análise'
     });
 
     myAntiFraud.save((err, newAntiFraud) => {
