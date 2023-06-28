@@ -1,4 +1,4 @@
-import MongoService from '../../../services/MongoService.mjs';
+import MongoService from './MongoService.js';
 import Transaction from '../models/transaction.js';
 import accountMock from '../mocks/accountMock.js';
 

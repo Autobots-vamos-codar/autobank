@@ -1,12 +1,14 @@
 import bcryptjs from 'bcryptjs';
 import Account from '../models/Account.js';
-import MongoService from '../../../services/MongoService.mjs';
+import Transaction from '../models/transaction.js';
+import MongoService from '../services/MongoService.js';
 import TransactionService from '../services/TransactionService.js';
 
-class AccountController {
-  static findAccounts = async (_req, res) => {
+class TransactionsController {
+  // Método que busca todas as transações na base mongo
+  static findTransactions = async (_req, res) => {
     try {
-      const docs = await MongoService.findMany(Account, {});
+      const docs = await MongoService.findMany(Transaction, {});
       return res.status(200).json(docs);
     } catch (error) {
       console.log(error);
@@ -14,10 +16,11 @@ class AccountController {
     }
   };
 
-  static findAccountById = async (req, res) => {
+  // Método que busca uma transação por id
+  static findTransactionById = async (req, res) => {
     const { idDoc } = req.params;
     try {
-      const doc = await MongoService.findOne(Account, { id: idDoc });
+      const doc = await MongoService.findOne(Transaction, { id: idDoc });
 
       if (!doc) {
         return res.status(404).json();
@@ -78,4 +81,4 @@ class AccountController {
   };
 }
 
-export default AccountController;
+export default TransactionsController;

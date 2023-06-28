@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 import AntiFraud from '../models/AntiFraud.js';
 
 class AntiFraudController {
@@ -30,11 +31,15 @@ class AntiFraudController {
     try {
       const { id } = req.params;
       const findById = await AntiFraud.findById(id);
+      console.log(findById.id)
+
       if (!findById) {
         res.status(400).send({ message: 'Anti fraude nao encontrada' });
       } else {
-        // TODO consumir api
-        console.log('entrou');
+        const response = await fetch(`http://localhost:3001/api/admin/accounts/${findById.clientId}`);
+        const accounts = await response.json();
+        console.log(accounts);
+        res.status(200).json(findById);
       }
     } catch (err) {
       res.status(500).send({ message: err.message });
