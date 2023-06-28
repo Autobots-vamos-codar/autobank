@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import fetch from 'node-fetch';
 import AntiFraud from '../models/AntiFraud.js';
 
@@ -31,15 +32,31 @@ class AntiFraudController {
     try {
       const { id } = req.params;
       const findById = await AntiFraud.findById(id);
-      console.log(findById.id);
+
+      const clientId = findById.clientId.toString()
+      const transactionId = findById.transactionId.toString()
+      console.log(transactionId)
 
       if (!findById) {
         res.status(400).send({ message: 'Anti fraude nao encontrada' });
       } else {
-        const response = await fetch(`http://localhost:3001/api/admin/accounts/${findById.clientId}`);
-        const accounts = await response.json();
-        console.log(accounts);
-        res.status(200).json(findById);
+        const responseClient = await fetch(`http://localhost:3001/api/admin/accounts/${clientId}`);
+        const accounts = await responseClient.json();
+        
+        const responseTransacao = await fetch(`http://localhost:3002/api/admin/transactions/${findById.transactionId}`);
+        const transacoes = await responseTransacao.json();
+        
+        const retorno = {
+          _id: findById._id,
+          status: findById.status,
+          dadosPessoais: {
+            id: accounts.dadosPessoais.id, nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, renda_mensal: accounts.dadosPessoais.renda_mensal, vencimento_fatura: accounts.cartão.vencimento_fatura
+          },
+          endereco: accounts.endereco,
+          transacao: { _id: transacoes._id, valor: transacoes.valor},
+        };
+
+        res.status(200).json(retorno);
       }
     } catch (err) {
       res.status(500).send({ message: err.message });
