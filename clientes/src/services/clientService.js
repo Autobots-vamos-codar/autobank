@@ -10,18 +10,20 @@ function validExpirationDate(validity) {
   const separateValidity = validity.split('/');
   const monthString = separateValidity[0];
   const yearString = separateValidity[1];
-  const validityDate = new Date(`${yearString}-${monthString}`);
-  const cardExpiryYear = validityDate.getFullYear();
-  const cardExpiryMonth = validityDate.getMonth() + 2;
+  const validityDate = new Date(yearString, monthString);
+  const cardExpiryYear = validityDate.getFullYear() + 100;
+  const cardExpiryMonth = validityDate.getMonth();
 
   const getActualDate = new Date();
   const actualYear = getActualDate.getFullYear();
-  const actualMonth = getActualDate.getMonth() + 2;
-
-  if (cardExpiryMonth < actualMonth && cardExpiryYear <= actualYear) {
-    return false;
+  const actualMonth = getActualDate.getMonth() + 1;
+  if (cardExpiryYear >= actualYear) {
+    if (cardExpiryMonth < actualMonth) {
+      return false;
+    }
+    return true;
   }
-  return true;
+  return false;
 }
 
 function validUserData(cardName, cvc, validity, user) {
@@ -62,6 +64,7 @@ class ClienteService {
         return { status: 404, message: 'cliente não encontrado' };
       }
       const validateData = validExpirationDate(userData.validade);
+      console.log(validateData);
       if (validateData === false) {
         return { status: 401, message: 'Cartão expirado' };
       }
@@ -70,7 +73,7 @@ class ClienteService {
         return { status: 400, message: 'Dados Inválidos' };
       }
 
-      return { status: 200, message: { userId: validData.id } };
+      return { status: 200, message: { clientId: validData.id } };
     } catch (error) {
       return { status: 500, message: error.message };
     }
