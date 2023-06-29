@@ -2,6 +2,20 @@
 import fetch from 'node-fetch';
 import AntiFraud from '../models/AntiFraud.js';
 
+async function validarStatus(antiFraud, novoStatus) {
+
+  if (!antiFraud) {
+    throw new Error('Análise anti-fraude não encontrada.');
+  }
+  if (antiFraud.status === 'aprovada' || antiFraud.status === 'rejeitada') {
+    throw new Error('Status não pode ser alterado.');
+  }
+  if (novoStatus !== 'aprovada' && novoStatus !== 'rejeitada') {
+    throw new Error('Status inválido.');
+  }
+  
+}
+
 class AntiFraudController {
   static findAllAntiFraud = async (_req, res) => {
     try {
@@ -65,8 +79,9 @@ class AntiFraudController {
 
   static createAntiFraud = async (req, res) => {
     try {
-      const infoAntiFraude = { ...req.body, status: 'Em análise' };
+      const infoAntiFraude = { ...req.body, status: 'em análise' };
       const novaAntifraude = new AntiFraud(infoAntiFraude);
+
       await novaAntifraude.save();
       res.status(201).json(novaAntifraude);
     } catch (err) {
@@ -78,16 +93,20 @@ class AntiFraudController {
     try {
       const { id } = req.params;
       const { status } = req.body;
-      const atualizaAntifraude = await AntiFraud.findByIdAndUpdate(
-        id,
-        { $set: { status } },
-        { new: true },
-      );
-      if (!atualizaAntifraude) {
-        res.status(404).send({ message: 'anti fraude nao encontrada' });
-      } else {
-        res.status(200).json(atualizaAntifraude);
-      }
+
+      const findAntiFraud = await AntiFraud.findById(id);
+
+      await validarStatus(findAntiFraud, status);
+
+      const options = {
+        method: 'PUT'
+      };
+
+      await fetch(`http://localhost:3002/api/admin/transactions/${findAntiFraud.transactionId}?status=${status.toLowerCase()}`, options);
+
+      const atualizaAntifraude = await AntiFraud.findByIdAndUpdate(id, { $set: { status } }, { new: true });
+
+      res.status(200).json(atualizaAntifraude);
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
