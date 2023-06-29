@@ -53,10 +53,10 @@ class AntiFraudController {
       if (!findById) {
         res.status(400).send({ message: 'Anti fraude nao encontrada' });
       } else {
-        const responseClient = await fetch(`http://localhost:3001/api/admin/clients/${clientId}`);
+        const responseClient = await fetch(`http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${clientId}`);
         const accounts = await responseClient.json();
 
-        const responseTransacao = await fetch(`http://localhost:3002/api/admin/transactions/${transactionId}`);
+        const responseTransacao = await fetch(`http://${process.env.TRANSACOES_HOST || '127.0.0.1'}:3002/api/admin/transactions/${transactionId}`);
         const transacoes = await responseTransacao.json();
 
         const retorno = {
