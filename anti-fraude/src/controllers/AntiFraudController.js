@@ -102,7 +102,7 @@ class AntiFraudController {
         method: 'PUT',
       };
 
-      await fetch(`http://localhost:3002/api/admin/transactions/${findAntiFraud.transactionId}?status=${status.toLowerCase()}`, options);
+      await fetch(`http://${process.env.TRANSACOES_HOST || '127.0.0.1'}:3002/api/admin/transactions/${findAntiFraud.transactionId}?status=${status.toLowerCase()}`, options);
 
       const atualizaAntifraude = await AntiFraud.findByIdAndUpdate(id, { $set: { status } }, { new: true });
 
