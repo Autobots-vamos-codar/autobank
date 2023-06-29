@@ -38,6 +38,15 @@ function validUserData(cardName, cvc, validity, user) {
   }
   return { id: user._id };
 }
+
+function validateTransectionValue(transactionValue, income) {
+  if (transactionValue < (income / 2)) {
+    return { status: 'aprovada' };
+  }
+  if (transactionValue >= (income / 2)) {
+    return { status: 'em análise' };
+  }
+}
 class ClienteService {
   static getUserDataWithoutAccount = async (id) => {
     try {
@@ -64,16 +73,21 @@ class ClienteService {
         return { status: 404, message: 'cliente não encontrado' };
       }
       const validateData = validExpirationDate(userData.validade);
-      console.log(validateData);
       if (validateData === false) {
         return { status: 401, message: 'Cartão expirado' };
       }
       const validData = validUserData(userData.nomeTitular, userData.cvc, userData.validade, isUserDataValid);
       if (validData === false) {
-        return { status: 400, message: 'Dados Inválidos' };
+        return { status: 400, message: 'rejeitado' };
       }
+      const isTransectionValueValid = validateTransectionValue(userData.valorTransacao, isUserDataValid.dadosPessoais.rendaMensal);
+      const response = {
+        clientId: validData.id,
+        status: isTransectionValueValid.status,
+        rendaMensal: isUserDataValid.dadosPessoais.rendaMensal,
+      };
 
-      return { status: 200, message: { clientId: validData.id } };
+      return { status: 200, message: response };
     } catch (error) {
       return { status: 500, message: error.message };
     }

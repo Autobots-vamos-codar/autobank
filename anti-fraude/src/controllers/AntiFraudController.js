@@ -28,7 +28,7 @@ class AntiFraudController {
 
   static findAntiFraudUnderReview = async (_req, res) => {
     try {
-      const antiFraudePorStatus = await AntiFraud.find({ status: 'Em análise' });
+      const antiFraudePorStatus = await AntiFraud.find({ status: 'em análise' });
       const data = antiFraudePorStatus.map((item) => ({
         id: item.id,
         clientId: item.clientId,
@@ -49,25 +49,24 @@ class AntiFraudController {
 
       const clientId = findById.clientId.toString();
       const transactionId = findById.transactionId.toString();
-      console.log(transactionId);
 
       if (!findById) {
         res.status(400).send({ message: 'Anti fraude nao encontrada' });
       } else {
-        const responseClient = await fetch(`http://localhost:3001/api/admin/clients/${clientId}`);
+        const responseClient = await fetch(`http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${clientId}`);
         const accounts = await responseClient.json();
 
-        const responseTransacao = await fetch(`http://localhost:3002/api/admin/transactions/${findById.transactionId}`);
+        const responseTransacao = await fetch(`http://${process.env.TRANSACOES_HOST || '127.0.0.1'}:3002/api/admin/transactions/${transactionId}`);
         const transacoes = await responseTransacao.json();
 
         const retorno = {
           _id: findById.id,
           status: findById.status,
           dadosPessoais: {
-            id: accounts.dadosPessoais.id, nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, renda_mensal: accounts.dadosPessoais.renda_mensal, vencimento_fatura: accounts.cartão.vencimento_fatura,
+            id: accounts.dadosPessoais.id, nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, rendaMensal: accounts.dadosPessoais.rendaMensal,
           },
           endereco: accounts.endereco,
-          transacao: { _id: transacoes.id, valor: transacoes.valor },
+          transacao: { _id: transacoes._id, valor: transacoes.valor },
         };
 
         res.status(200).json(retorno);
