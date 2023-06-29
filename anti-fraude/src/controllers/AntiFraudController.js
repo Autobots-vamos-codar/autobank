@@ -28,7 +28,7 @@ class AntiFraudController {
 
   static findAntiFraudUnderReview = async (_req, res) => {
     try {
-      const antiFraudePorStatus = await AntiFraud.find({ status: 'Em análise' });
+      const antiFraudePorStatus = await AntiFraud.find({ status: 'em análise' });
       const data = antiFraudePorStatus.map((item) => ({
         id: item.id,
         clientId: item.clientId,
