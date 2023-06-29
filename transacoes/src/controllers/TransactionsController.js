@@ -53,14 +53,6 @@ class TransactionsController {
   static updateTransactionStatus = async (req, res) => {
     const { id } = req.params;
     const status = req.query.status;
-    /* try {
-      const doc = await MongoService.updateOne(Account, id, req.body);
-      console.log(doc);
-      return res.status(204).set('Location', `/admin/accounts/${doc.id}`).send();
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send({ message: error.message });
-    } */
 
     try {
       await TransactionService.processUpdateStatus(id, status);

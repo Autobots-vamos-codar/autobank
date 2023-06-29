@@ -16,47 +16,6 @@ function isValidateStatusToUpdate(oldStatus, newStatus) {
 class TransactionService {
   // eslint-disable-next-line no-unused-vars
 
-  static async validateIncome(datasTransaction) {
-    try {
-      // Esperar time de clientes fazer rota de validação de dados
-      console.log('Buscando dados de usuário');
-      const idUser = '649c85f8d1ff306ce5d88226';
-      const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`;
-      console.log(url);
-      const responseUser = await fetch(url);
-      const user = await responseUser.json();
-      console.log(user.rendaMensal);
-
-      const income = user.dadosPessoais.rendaMensal.$numberDecimal;
-      const transactionValue = datasTransaction.valorTransacao;
-
-      console.log(`Renda mensal = ${income} valor transação ${transactionValue}`);
-      if (income / 2 < transactionValue) {
-        console.log('Processando transação em análise');
-        return this.processUnderReviewTransaction(datasTransaction, idUser);
-      }
-      console.log('Processando transação em análise');
-      return this.processApprovedTransaction(datasTransaction, idUser);
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
-
-  static hasTheRequiredTransactionData(datasTransaction) {
-    const transactionDataRequired = ['valorTransacao', 'nome_titular', 'validade', 'numero', 'cvc'];
-    const dataTransaction = Object.keys(datasTransaction);
-    const hasTheDatas = transactionDataRequired.every((data) => dataTransaction.includes(data));
-
-    console.log('Antes de validar dados');
-    if (!hasTheDatas) {
-      console.log('Erro na validação de dados do cartão');
-      return { statusResponse: 400 };
-    }
-    console.log('Objeto valido até aqui');
-    return this.validateIncome(datasTransaction);
-  }
-
   static async requireID(datasOfTransaction) {
     try {
       const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients`;
@@ -100,13 +59,6 @@ class TransactionService {
     }
   }
 
-  static async validateDataOfTransaction(datasOfTransaction) {
-    console.log('Validando dados da transação');
-    const datasValid = this.hasTheRequiredTransactionData(datasOfTransaction);
-
-    return datasValid;
-  }
-
   static async processApprovedTransaction(datasTransaction, idUser) {
     const dataTransaction = {
       status: 'Aprovada',
@@ -128,16 +80,6 @@ class TransactionService {
     const saved = await this.saveTransaction(dataTransaction);
     const submitToAntiFraudService = await this.sendDataToServiceAntFraude(saved);
 
-    // console.log(`Objeto subbmit = ${submitToAntiFraudService}`);
-    // if (typeof (submitToAntiFraudService) !== 'object') {
-    //   return {
-    //     status: 'Em análise',
-    //     idUser, statusResponse: 303,
-    //     message: 'Transação executada com sucesso!',
-    //     id: saved.id,
-    //   };
-    // }
-
     if (!submitToAntiFraudService.error) {
       submitToAntiFraudService.status = 'Em análise';
       submitToAntiFraudService.message = 'Transação executada com sucesso!';
@@ -158,10 +100,59 @@ class TransactionService {
     }
   }
 
+  static async validateDataOfTransaction(datasOfTransaction) {
+    console.log('Validando dados da transação');
+    const transactionDataRequired = ['valorTransacao', 'nome_titular', 'validade', 'numero', 'cvc'];
+    const dataTransaction = Object.keys(datasOfTransaction);
+    const hasTheDatas = transactionDataRequired.every((data) => dataTransaction.includes(data));
+
+    console.log(`Antes de validar dados - ${hasTheDatas}`);
+    if (!hasTheDatas) {
+      console.log('Erro na validação de dados do cartão');
+      return false;
+    }
+    console.log('Objeto valido até aqui');
+
+    return true;
+  }
+
+  static async validateIncome(datasTransaction) {
+    try {
+      // Esperar time de clientes fazer rota de validação de dados
+      console.log('Buscando dados de usuário');
+      const idUser = '649c85f8d1ff306ce5d88226';
+      const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`;
+      console.log(url);
+      const responseUser = await fetch(url);
+      const user = await responseUser.json();
+      console.log(user);
+      // console.log(user.dadosPessoais.rendaMensal);
+
+      const income = user.dadosPessoais.rendaMensal.$numberDecimal;
+      const transactionValue = datasTransaction.valorTransacao;
+
+      console.log(`Renda mensal = ${income} valor transação ${transactionValue}`);
+      return { isValid: income / 2 >= transactionValue, id: idUser };
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
   static async processTransaction(transactionBody) {
     console.log('Processando transação');
     const transaction = await this.validateDataOfTransaction(transactionBody);
-    return transaction;
+    if (transaction) {
+      const income = await this.validateIncome(transactionBody);
+      // console.log(income);
+      if (income.isValid) {
+        return await this.processApprovedTransaction(transactionBody, income.id);
+      } else {
+        return await this.processUnderReviewTransaction(transactionBody, income.id);
+      }
+    } else {
+      return { statusResponse: 400 };
+    }
   }
 
   static async processUpdateStatus(id, newStatus) {
