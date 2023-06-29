@@ -19,10 +19,11 @@ function validExpirationDate(validity) {
   const actualMonth = getActualDate.getMonth() + 1;
   if (cardExpiryYear <= actualYear) {
     if (cardExpiryMonth < actualMonth) {
+      console.log('expirou mes');
       return false;
     }
 
-    return true;
+    return false;
   }
 
   return true;
