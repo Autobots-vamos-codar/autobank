@@ -16,7 +16,7 @@ function isValidStatusToUpdate(oldStatus, newStatus) {
 class TransactionService {
   // eslint-disable-next-line no-unused-vars
 
-  static async requireID(datasOfTransaction) {
+  static async requireIDAndIncome(datasOfTransaction) {
     console.log(datasOfTransaction);
     try {
       const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients`;
@@ -30,15 +30,17 @@ class TransactionService {
         },
       });
 
-      const idUser = await reqIDToServiceClient.json();
+      const responseServiceClient = await reqIDToServiceClient.json();
 
       if (reqIDToServiceClient.status >= 400) {
-        console.log(`Causa do erro: ${idUser}`);
+        console.log(`Causa do erro: ${responseServiceClient}`);
         console.log(`Erro status: ${reqIDToServiceClient.status}`);
         throw new Error(reqIDToServiceClient.status);
       }
 
-      return idUser.clientId;
+      const { clientId, status, rendaMensal } = responseServiceClient;
+
+      return { clientId, statusIncome: status, income: rendaMensal };
     } catch (error) {
       console.log(error);
       return { error: error.message };
@@ -127,24 +129,25 @@ class TransactionService {
     try {
       // Esperar time de clientes fazer rota de validação de dados
       console.log('Buscando dados de usuário');
-      const idUser = await this.requireID(datasTransaction);
-      console.log(idUser);
-      if (!idUser.error) {
-        const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`;
+      const idUserAndDataIncome = await this.requireIDAndIncome(datasTransaction);
+      console.log(idUserAndDataIncome);
+
+      if (!idUserAndDataIncome.error) {
+        const { clientId, statusIncome, income } = idUserAndDataIncome;
+
+        const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${clientId}`;
         console.log(url);
+
         const responseUser = await fetch(url);
         const user = await responseUser.json();
+
         console.log(user);
-        // console.log(user.dadosPessoais.rendaMensal);
 
-        const income = user.dadosPessoais.rendaMensal.$numberDecimal;
-        const transactionValue = datasTransaction.valorTransacao;
-
-        console.log(`Renda mensal = ${income} valor transação ${transactionValue}`);
-        return { isValid: income / 2 >= transactionValue, id: idUser };
+        console.log(`Renda mensal = ${income.$numberDecimal} valor transação ${datasTransaction.valorTransacao}`);
+        return { isValid: statusIncome === 'aprovada', id: clientId };
       }
 
-      throw new Error(idUser.error);
+      throw new Error(idUserAndDataIncome.error);
     } catch (error) {
       return { error: error.message };
     }
