@@ -44,7 +44,7 @@ function validateTransectionValue(transactionValue, income) {
     return { status: 'aprovada' };
   }
   if (transactionValue >= (income / 2)) {
-    return { status: 'Em análise' };
+    return { status: 'em análise' };
   }
 }
 class ClienteService {
@@ -78,7 +78,7 @@ class ClienteService {
       }
       const validData = validUserData(userData.nomeTitular, userData.cvc, userData.validade, isUserDataValid);
       if (validData === false) {
-        return { status: 400, message: 'Rejeitado' };
+        return { status: 400, message: 'rejeitado' };
       }
       const isTransectionValueValid = validateTransectionValue(userData.valorTransacao, isUserDataValid.dadosPessoais.rendaMensal);
       const response = {
