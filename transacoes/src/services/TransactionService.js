@@ -170,6 +170,9 @@ class TransactionService {
 
   static async processUpdateStatus(id, newStatus) {
     const transaction = await MongoService.findOne(Transaction, { _id: id });
+    if (!transaction) {
+      throw new Error('NotFound');
+    }
     console.log(transaction);
     if (isValidStatusToUpdate(transaction.status, newStatus)) {
       const doc = await MongoService.updateOne(Transaction, id, { status: newStatus });

@@ -31,17 +31,21 @@ class TransactionsController {
       }
       return res.status(200).json(doc);
     } catch (error) {
-      console.log(error);
+      console.log(error.name);
+      if (error.name === 'BSONTypeError') {
+        return res.status(400).send({ message: 'Id inválido, forneça um id válido para realizar a consulta' });
+      }
       return res.status(500).send({ message: error.message });
     }
   };
 
   static createAccount = async (req, res) => {
-    const { senha } = req.body;
-    const custo = 12;
-    const passwordEncrypted = await bcryptjs.hash(senha, custo);
-    req.body.senha = passwordEncrypted;
     try {
+      const { senha } = req.body;
+      const custo = 12;
+      const passwordEncrypted = await bcryptjs.hash(senha, custo);
+      req.body.senha = passwordEncrypted;
+
       const accountCreated = await MongoService.createOne(Account, req.body);
       return res.status(201).set('Location', `/admin/accounts/${accountCreated.id}`).json(accountCreated);
     } catch (error) {
@@ -58,6 +62,14 @@ class TransactionsController {
       await TransactionService.processUpdateStatus(id, status);
       return res.status(204).send();
     } catch (error) {
+      if (error.message === 'NotFound') {
+        return res.status(404).send({
+          message: 'O id informado não corresponde a nenhum valor na base'
+        + ', verifique o id informado e tente novamente',
+        });
+      } else if (error.name === 'CastError') {
+        return res.status(400).send({ message: 'Id inválido, forneça um id válido para realizar a consulta' });
+      }
       return res.status(400).send({ message: error.message });
     }
   };
