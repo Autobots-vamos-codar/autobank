@@ -9,7 +9,8 @@ class ClienteController {
 
   static validDataAtDatabase = async (req, res) => {
     const clienteData = req.body;
-    const verifyUser = await ClienteService.validDataAtDatabase(clienteData);
+    const { vencimento } = req.query;
+    const verifyUser = await ClienteService.validDataAtDatabase(clienteData, vencimento);
     res.status(verifyUser.status).json(verifyUser.message);
   };
 }
