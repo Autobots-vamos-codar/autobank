@@ -86,6 +86,12 @@ class TransactionsController {
     if (transaction.statusResponse === 400) {
       return res.status(400).send({ message: 'Os dados fornecidos estão inválidos!' });
     }
+    if (transaction.statusResponse === 401) {
+      return res.status(401).send({ message: 'Cartão expirado!' });
+    }
+    if (transaction.statusResponse === 404) {
+      return res.status(404).send({ message: 'Cliente não encontrado!' });
+    }
     if (transaction.statusResponse === 201) {
       return res.status(201).send(transaction);
     }

@@ -17,6 +17,7 @@ class TransactionService {
   // eslint-disable-next-line no-unused-vars
 
   static async requireID(datasOfTransaction) {
+    console.log(datasOfTransaction);
     try {
       const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients`;
       // console.log(url);
@@ -24,17 +25,23 @@ class TransactionService {
         method: 'POST',
         body: JSON.stringify(datasOfTransaction),
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       });
-      console.log(reqIDToServiceClient);
 
       const idUser = await reqIDToServiceClient.json();
 
-      return idUser;
+      if (reqIDToServiceClient.status >= 400) {
+        console.log(`Causa do erro: ${idUser}`);
+        console.log(`Erro status: ${reqIDToServiceClient.status}`);
+        throw new Error(reqIDToServiceClient.status);
+      }
+
+      return idUser.userId;
     } catch (error) {
       console.log(error);
-      return { error: error.message, statusResponse: 500 };
+      return { error: error.message };
     }
   }
 
@@ -102,7 +109,7 @@ class TransactionService {
 
   static async validateDataOfTransaction(datasOfTransaction) {
     console.log('Validando dados da transação');
-    const transactionDataRequired = ['valorTransacao', 'nome_titular', 'validade', 'numero', 'cvc'];
+    const transactionDataRequired = ['valorTransacao', 'nomeCartao', 'validade', 'numeroCartao', 'cvc'];
     const dataTransaction = Object.keys(datasOfTransaction);
     const hasTheDatas = transactionDataRequired.every((data) => dataTransaction.includes(data));
 
@@ -120,22 +127,26 @@ class TransactionService {
     try {
       // Esperar time de clientes fazer rota de validação de dados
       console.log('Buscando dados de usuário');
-      const idUser = '649c85f8d1ff306ce5d88226';
-      const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`;
-      console.log(url);
-      const responseUser = await fetch(url);
-      const user = await responseUser.json();
-      console.log(user);
-      // console.log(user.dadosPessoais.rendaMensal);
+      const idUser = await this.requireID(datasTransaction);
+      console.log(idUser);
+      if (!idUser.error) {
+        const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idUser}`;
+        console.log(url);
+        const responseUser = await fetch(url);
+        const user = await responseUser.json();
+        console.log(user);
+        // console.log(user.dadosPessoais.rendaMensal);
 
-      const income = user.dadosPessoais.rendaMensal.$numberDecimal;
-      const transactionValue = datasTransaction.valorTransacao;
+        const income = user.dadosPessoais.rendaMensal.$numberDecimal;
+        const transactionValue = datasTransaction.valorTransacao;
 
-      console.log(`Renda mensal = ${income} valor transação ${transactionValue}`);
-      return { isValid: income / 2 >= transactionValue, id: idUser };
+        console.log(`Renda mensal = ${income} valor transação ${transactionValue}`);
+        return { isValid: income / 2 >= transactionValue, id: idUser };
+      }
+
+      throw new Error(idUser.error);
     } catch (error) {
-      console.log(error);
-      return null;
+      return { error: error.message };
     }
   }
 
@@ -144,7 +155,9 @@ class TransactionService {
     const transaction = await this.validateDataOfTransaction(transactionBody);
     if (transaction) {
       const income = await this.validateIncome(transactionBody);
-      // console.log(income);
+      if (income.error) {
+        return { statusResponse: Number(income.error) };
+      }
       if (income.isValid) {
         return await this.processApprovedTransaction(transactionBody, income.id);
       } else {
