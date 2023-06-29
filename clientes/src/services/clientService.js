@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable no-unreachable */
@@ -24,7 +25,13 @@ function validExpirationDate(validity) {
 }
 
 function validUserData(cardName, cvc, validity, user) {
-  if (cardName !== user.dadosCartao.nomeCartao || cvc !== user.dadosCartao.cvc || validity !== user.dadosCartao.validade) {
+  if (cvc != user.dadosCartao.cvc) {
+    return false;
+  }
+  if (validity != user.dadosCartao.validade) {
+    return false;
+  }
+  if (cardName != user.dadosCartao.nomeTitular) {
     return false;
   }
   return { id: user._id };
@@ -58,7 +65,7 @@ class ClienteService {
       if (validateData === false) {
         return { status: 401, message: 'Cartão expirado' };
       }
-      const validData = validUserData(userData.nomeCartao, userData.cvc, userData.validade, isUserDataValid);
+      const validData = validUserData(userData.nomeTitular, userData.cvc, userData.validade, isUserDataValid);
       if (validData === false) {
         return { status: 400, message: 'Dados Inválidos' };
       }
