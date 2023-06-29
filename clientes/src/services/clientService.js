@@ -17,13 +17,15 @@ function validExpirationDate(validity) {
   const getActualDate = new Date();
   const actualYear = getActualDate.getFullYear();
   const actualMonth = getActualDate.getMonth() + 1;
-  if (cardExpiryYear >= actualYear) {
+  if (cardExpiryYear <= actualYear) {
     if (cardExpiryMonth < actualMonth) {
       return false;
     }
+
     return true;
   }
-  return false;
+
+  return true;
 }
 
 function validUserData(cardName, cvc, validity, user) {
@@ -47,6 +49,7 @@ function validateTransectionValue(transactionValue, income) {
     return { status: 'em análise' };
   }
 }
+
 class ClienteService {
   static getUserDataWithoutAccount = async (id) => {
     try {
@@ -64,10 +67,9 @@ class ClienteService {
     }
   };
 
-  static validDataAtDatabase = async (user) => {
+  static validDataAtDatabase = async (user, vencimento) => {
     try {
       const userData = user;
-
       const isUserDataValid = await Client.findOne({ 'dadosCartao.numeroCartao': userData.numeroCartao });
       if (isUserDataValid === null) {
         return { status: 404, message: 'cliente não encontrado' };
@@ -86,7 +88,6 @@ class ClienteService {
         status: isTransectionValueValid.status,
         rendaMensal: isUserDataValid.dadosPessoais.rendaMensal,
       };
-
       return { status: 200, message: response };
     } catch (error) {
       return { status: 500, message: error.message };

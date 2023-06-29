@@ -76,7 +76,7 @@ class TransactionService {
       clientId: idUser,
     };
     await this.saveTransaction(dataTransaction);
-    return { status: 'Aprovado', idUser, statusResponse: 201 };
+    return { status: 'Aprovada', idUser, statusResponse: 201 };
   }
 
   static async processUnderReviewTransaction(datasOfTrasaction, idUser) {

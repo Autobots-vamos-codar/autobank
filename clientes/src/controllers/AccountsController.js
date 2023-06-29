@@ -1,7 +1,6 @@
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Account from '../models/Account.js';
-import ClienteService from '../services/clientService.js';
 
 async function criaTokenJWT(email) {
   // eslint-disable-next-line object-shorthand
@@ -82,12 +81,6 @@ class AccountController {
     const token = await criaTokenJWT(req.body.email);
     res.set('Authorization', token);
     res.status(204).send();
-  };
-
-  static getUserDataWithoutAccount = async (req, res) => {
-    const { id } = req.params;
-    const userData = await ClienteService.getUserDataWithoutAccount(id);
-    res.status(userData.status).send(userData.message);
   };
 }
 

@@ -17,7 +17,7 @@
 		},
 		"dadosCartao": {
       "numeroCartao": "5107122383899963",
-      "nomeCartao": "LAURA M FREITAS",
+      "nomeTitular": "LAURA M FREITAS",
       "validade": "08/24",
       "cvc": 412,
       "diaVencimentoFatura": 5
@@ -41,7 +41,7 @@
 		},
 		"dadosCartao": {
       "numeroCartao": "5109405218436137",
-      "nomeCartao": "FLAVIA A R GOMES",
+      "nomeTitular": "FLAVIA A R GOMES",
       "validade": "09/24",
       "cvc": 519,
       "diaVencimentoFatura": 25
@@ -65,7 +65,7 @@
 		},
 		"dadosCartao": {
       "numeroCartao": "4916642182615702",
-      "nomeCartao": "VICENTE C MOTA",
+      "nomeTitular": "VICENTE C MOTA",
       "validade": "02/24",
       "cvc": 989,
       "diaVencimentoFatura": 25
@@ -89,7 +89,7 @@
 		},
 		"dadosCartao": {
       "numeroCartao": "5179914040815074",
-      "nomeCartao": "FILIPE L FIGUEIREDO",
+      "nomeTitular": "FILIPE L FIGUEIREDO",
       "validade": "04/25",
       "cvc": 988,
       "diaVencimentoFatura": 10
@@ -113,7 +113,7 @@
 		},
 		"dadosCartao": {
       "numeroCartao": "4716537954451553",
-      "nomeCartao": "ROBERTO J TEIXEIRA",
+      "nomeTitular": "ROBERTO J TEIXEIRA",
       "validade": "04/24",
       "cvc": 288,
       "diaVencimentoFatura": 5
