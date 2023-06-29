@@ -20,23 +20,23 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Transaction"
-    # post:
-    #   summary: Add transaction
-    #   description: Add new transaction
-    #   requestBody:
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: "#/components/schemas/Transaction"
-    #   responses:
-    #     '201':
-    #       description: created
-    #       content:
-    #         application/json:
-    #           schema:
-    #               $ref: "#/components/schemas/Transaction"
-    #     '401':
-    #       description: unauthorized
+    post:
+      summary: Add transaction
+      description: Add new transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionPost"
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/Transaction"
+        '401':
+          description: unauthorized
   /api/admin/transactions/{id}:
     get:
       summary: Find transaction
@@ -114,4 +114,16 @@ components:
         status:
           type: string
         clientId:
+          type: string
+    TransactionPost:
+      type: object
+      properties:
+        nome_titular:
+          type: string
+        valorTransacao:
+          type: number
+          format: double
+        validade:
+          type: string
+        numero:
           type: string

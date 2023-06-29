@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import MongoService from './MongoService.js';
 import Transaction from '../models/transaction.js';
 
-function isValidateStatusToUpdate(oldStatus, newStatus) {
+function isValidStatusToUpdate(oldStatus, newStatus) {
   console.log(`${oldStatus} - ${newStatus}`);
   if (oldStatus.toLowerCase() === 'em análise') {
     if (newStatus.toLowerCase() === 'aprovada' || newStatus.toLowerCase() === 'rejeitada') {
@@ -158,7 +158,7 @@ class TransactionService {
   static async processUpdateStatus(id, newStatus) {
     const transaction = await MongoService.findOne(Transaction, { _id: id });
     console.log(transaction);
-    if (isValidateStatusToUpdate(transaction.status, newStatus)) {
+    if (isValidStatusToUpdate(transaction.status, newStatus)) {
       const doc = await MongoService.updateOne(Transaction, id, { status: newStatus });
       console.log(doc);
       return;
