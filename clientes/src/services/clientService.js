@@ -84,6 +84,7 @@ class ClienteService {
       const response = {
         clientId: validData.id,
         status: isTransectionValueValid.status,
+        rendaMensal: isUserDataValid.dadosPessoais.rendaMensal,
       };
 
       return { status: 200, message: response };
