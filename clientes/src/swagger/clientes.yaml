@@ -235,7 +235,7 @@ components:
             numeroCartao:
               type: string
               example: "5243777021004048"
-            nomeCartao:
+            nomeTitular:
               type: string
               example: "AURORA S RAMOS"
             validade:
