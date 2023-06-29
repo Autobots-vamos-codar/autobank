@@ -1,6 +1,6 @@
 {
     "valorTransacao": 2000,
-    "nomeCartao": "José",
+    "nomeTitular": "José",
     "validade": "02/26",
     "numeroCartao": "12345678912345",
     "cvc": 123

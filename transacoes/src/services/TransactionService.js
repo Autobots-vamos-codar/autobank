@@ -38,7 +38,7 @@ class TransactionService {
         throw new Error(reqIDToServiceClient.status);
       }
 
-      return idUser.userId;
+      return idUser.clientId;
     } catch (error) {
       console.log(error);
       return { error: error.message };
@@ -70,7 +70,7 @@ class TransactionService {
     const dataTransaction = {
       status: 'Aprovada',
       valor: datasTransaction.valorTransacao,
-      nome_titular: datasTransaction.nome_titular,
+      nomeTitular: datasTransaction.nomeTitular,
       clientId: idUser,
     };
     await this.saveTransaction(dataTransaction);
@@ -81,7 +81,7 @@ class TransactionService {
     const dataTransaction = {
       status: 'Em análise',
       valor: datasOfTrasaction.valorTransacao,
-      nome_titular: datasOfTrasaction.nome_titular,
+      nomeTitular: datasOfTrasaction.nomeTitular,
       clientId: idUser,
     };
     const saved = await this.saveTransaction(dataTransaction);
@@ -109,7 +109,7 @@ class TransactionService {
 
   static async validateDataOfTransaction(datasOfTransaction) {
     console.log('Validando dados da transação');
-    const transactionDataRequired = ['valorTransacao', 'nomeCartao', 'validade', 'numeroCartao', 'cvc'];
+    const transactionDataRequired = ['valorTransacao', 'nomeTitular', 'validade', 'numeroCartao', 'cvc'];
     const dataTransaction = Object.keys(datasOfTransaction);
     const hasTheDatas = transactionDataRequired.every((data) => dataTransaction.includes(data));
 

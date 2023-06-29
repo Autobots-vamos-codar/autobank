@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const transactionSchema = new mongoose.Schema(
   {
-    nome_titular: { type: String, required: true },
+    nomeTitular: { type: String, required: true },
     valor: { type: Number, required: true },
     status: { type: String, required: true },
     clientId: { type: ObjectID, required: true },
