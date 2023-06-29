@@ -67,7 +67,7 @@ const clientSchema = new mongoose.Schema(
         maxLenght: 16,
         required: true,
       },
-      nomeCartao: {
+      nomeTitular: {
         type: String,
         match: /^[A-Za-z ]{5,}$/,
         required: true,

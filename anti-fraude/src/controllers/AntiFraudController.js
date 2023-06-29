@@ -3,17 +3,17 @@ import fetch from 'node-fetch';
 import AntiFraud from '../models/AntiFraud.js';
 
 async function validarStatus(antiFraud, novoStatus) {
+  const statusAtual = antiFraud.status;
 
   if (!antiFraud) {
     throw new Error('Análise anti-fraude não encontrada.');
   }
-  if (antiFraud.status === 'aprovada' || antiFraud.status === 'rejeitada') {
+  if (statusAtual.toLowerCase() === 'aprovada' || statusAtual.toLowerCase() === 'rejeitada') {
     throw new Error('Status não pode ser alterado.');
   }
   if (novoStatus !== 'aprovada' && novoStatus !== 'rejeitada') {
     throw new Error('Status inválido.');
   }
-  
 }
 
 class AntiFraudController {
@@ -61,13 +61,13 @@ class AntiFraudController {
         const transacoes = await responseTransacao.json();
 
         const retorno = {
-          _id: findById._id,
+          _id: findById.id,
           status: findById.status,
           dadosPessoais: {
             id: accounts.dadosPessoais.id, nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, renda_mensal: accounts.dadosPessoais.renda_mensal, vencimento_fatura: accounts.cartão.vencimento_fatura,
           },
           endereco: accounts.endereco,
-          transacao: { _id: transacoes._id, valor: transacoes.valor },
+          transacao: { _id: transacoes.id, valor: transacoes.valor },
         };
 
         res.status(200).json(retorno);
@@ -96,10 +96,10 @@ class AntiFraudController {
 
       const findAntiFraud = await AntiFraud.findById(id);
 
-      await validarStatus(findAntiFraud, status);
+      await validarStatus(findAntiFraud, status.toLowerCase());
 
       const options = {
-        method: 'PUT'
+        method: 'PUT',
       };
 
       await fetch(`http://localhost:3002/api/admin/transactions/${findAntiFraud.transactionId}?status=${status.toLowerCase()}`, options);
