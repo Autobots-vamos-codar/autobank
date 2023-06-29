@@ -127,3 +127,5 @@ components:
           type: string
         numero:
           type: string
+        cvc:
+          type: string
