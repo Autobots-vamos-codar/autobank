@@ -21,10 +21,8 @@ function validExpirationDate(validity) {
     if (cardExpiryMonth < actualMonth) {
       return false;
     }
-
-    return false;
+    return true;
   }
-
   return true;
 }
 
