@@ -1,12 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import express from 'express';
-// import passport from '../middleware/estrategias.js';
 import AccountController from '../controllers/AccountsController.js';
-<<<<<<< HEAD
-=======
-// import token from '../middlware/tokenteste.js';
 import { bearer, local } from '../middleware/autenticationMiddleware.js';
->>>>>>> 6a6c873046d02b4d8f82d8c06b196c46a6d6e9b0
 
 const router = express.Router();
 
