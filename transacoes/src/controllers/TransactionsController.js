@@ -1,9 +1,9 @@
-import bcryptjs from 'bcryptjs';
 import mongoose from 'mongoose';
-import Account from '../models/Account.js';
+import bcryptjs from 'bcryptjs';
 import MongoService from '../services/MongoService.mjs';
 import Transaction from '../models/transaction.js';
 import TransactionService from '../services/TransactionService.js';
+import Account from '../models/Account.js';
 
 class TransactionsController {
   // Método que busca todas as transações na base mongo
@@ -27,7 +27,7 @@ class TransactionsController {
       const doc = await MongoService.findOne(Transaction, { _id: mongoose.Types.ObjectId(idDoc) });
 
       if (!doc) {
-        return res.status(404).json();
+        return res.status(404).json({ message: 'Transação não encontrada' });
       }
       return res.status(200).json(doc);
     } catch (error) {
@@ -107,14 +107,7 @@ class TransactionsController {
     if (transaction.statusResponse === 201) {
       return res.status(201).send(transaction);
     }
-    if (transaction.statusResponse === 303) {
-      if (transaction.error) {
-        console.log('Retorna 500');
-        return res.status(500).set().json(transaction);
-      }
-    }
-    console.log('Retorna 303');
-    console.log(transaction.id);
+
     return res.status(303).set('Location', `http://localhost:3002/api/admin/transactions/${transaction.id}`).json(transaction);
   };
 }

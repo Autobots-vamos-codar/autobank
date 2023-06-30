@@ -122,7 +122,7 @@ paths:
       tags:
       - clients
       summary: Find client
-      description: Find one specific client
+      description: Find one specific client and return personal data and address info
       parameters:
         - name: id
           in: path
@@ -136,12 +136,36 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/Client"
+                $ref: "#/components/schemas/ClientWithoutCard"
         '400':
           description: invalid ID supplied
         '404':
           description: not found
-
+  /api/admin/clients:
+    post:
+      tags:
+        - clients
+      summary: Verify transaction
+      description: Verify if card info and transaction value is valid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Transaction"
+        required: true
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/Validation"
+        '400':
+          description: rejected
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
 components:
   schemas:
     Account:
@@ -157,7 +181,7 @@ components:
         senha:
           type: string
           format: password
-    Client:
+    ClientWithoutCard:
       type: object
       properties:
         dadosPessoais:
@@ -179,7 +203,7 @@ components:
             rendaMensal:
               type: number
               example: 7300
-        endereco:
+        Endereco:
           type: object
           properties:
             rua:
@@ -229,21 +253,42 @@ components:
               - SE
               - TO
               example: "RJ"
-        dadosCartao:
-          type: object
-          properties:
-            numeroCartao:
-              type: string
-              example: "5243777021004048"
-            nomeTitular:
-              type: string
-              example: "AURORA S RAMOS"
-            validade:
-              type: string
-              example: "02/25"
-            cvc:
-              type: number
-              example: 448
-            diaVencimentoFatura:
-              type: number
-              example: 5
+        vencimentoDaFatura:
+          type: number
+          example: 5
+    Transaction:
+      type: object
+      properties:
+        numeroCartao:
+          type: string
+          example: "5243777021004048"
+          required: true
+        validade:
+          type: string
+          example: "02/25"
+          required: true
+        cvc:
+          type: number
+          example: 448
+          required: true
+        nomeTitular:
+          type: string
+          example: "AURORA S RAMOS"
+          required: true
+        valorTransacao:
+          type: number
+          example: 500
+          required: true
+    Validation:
+      type: object
+      properties:
+        clientId:
+          type: string
+          example: "649b48b62cddd1d9e69d05c7"
+        status:
+          type: string
+          enum: ["aprovada", "em análise"]
+          example: "aprovada"
+        rendaMensal:
+          type: number
+          example: 500

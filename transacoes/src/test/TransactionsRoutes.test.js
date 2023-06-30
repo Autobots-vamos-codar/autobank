@@ -32,7 +32,7 @@ describe('GET em /api/admin/transactions', () => {
   });
   it('Deve retornar detalhes de uma transação', async () => {
     await request(app)
-      .get('/api/admin/transactions/649d86d95f52bb585df676b8')
+      .get('/api/admin/transactions/649da22f2534494ba8be9fcb')
       .set('Accept', 'application/json')
       .expect('content-type', /json/)
       .expect(200);
@@ -47,10 +47,10 @@ describe('Testes de POST', () => {
       .set('Accept', 'application/json')
       .send({
         valorTransacao: 10,
-        nome_titular: 'José',
-        validade: '02/26',
-        numero: '12345678912345',
-        cvc: 123,
+        nomeTitular: 'VICENTE C MOTA',
+        validade: '02/24',
+        numeroCartao: '4916642182615702',
+        cvc: 989,
       })
       .expect('content-type', /json/)
       .expect(201);
@@ -63,16 +63,57 @@ describe('Testes de POST', () => {
       .post('/api/admin/transactions')
       .set('Accept', 'application/json')
       .send({
-        valorTransacao: 1000000,
-        nome_titular: 'José',
-        validade: '02/26',
-        numero: '12345678912345',
-        cvc: 123,
+        valorTransacao: 10000,
+        nomeTitular: 'VICENTE C MOTA',
+        validade: '02/24',
+        numeroCartao: '4916642182615702',
+        cvc: 989,
       })
       .expect('content-type', /json/)
       .expect(303);
 
     expect(createdTransaction.body.status.toLowerCase()).toEqual('em análise');
+  });
+  it('Deve retornar erro ao não enviar algum dado', async () => {
+    await request(app)
+      .post('/api/admin/transactions/')
+      .set('Accept', 'application/json')
+      .send({
+        valorTransacao: 10000,
+        nomeTitular: 'VICENTE C MOTA',
+        validade: '02/24',
+        numeroCartao: '4916642182615702',
+      })
+      .expect('content-type', /json/)
+      .expect(400);
+  });
+  it('Deve retornar erro ao a data de cartão estiver expirada', async () => {
+    await request(app)
+      .post('/api/admin/transactions/')
+      .set('Accept', 'application/json')
+      .send({
+        valorTransacao: 10000,
+        nomeTitular: 'LAURA M FREITAS',
+        validade: '08/21',
+        numeroCartao: '5109405218436137',
+        cvc: 412,
+      })
+      .expect('content-type', /json/)
+      .expect(401);
+  });
+  it('Deve retornar erro ao não passar dados certos do número do cartão', async () => {
+    await request(app)
+      .post('/api/admin/transactions/')
+      .set('Accept', 'application/json')
+      .send({
+        valorTransacao: 10000,
+        nomeTitular: 'LAURA M FREITAS',
+        validade: '08/21',
+        numeroCartao: '51094052184361',
+        cvc: 412,
+      })
+      .expect('content-type', /json/)
+      .expect(404);
   });
 });
 
