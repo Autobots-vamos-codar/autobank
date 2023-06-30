@@ -17,11 +17,16 @@ function validExpirationDate(validity) {
   const getActualDate = new Date();
   const actualYear = getActualDate.getFullYear();
   const actualMonth = getActualDate.getMonth() + 1;
-  if (cardExpiryYear <= actualYear) {
+  if (cardExpiryYear === actualYear) {
     if (cardExpiryMonth < actualMonth) {
       return false;
     }
+
     return true;
+  }
+
+  if (cardExpiryYear < actualYear) {
+    return false;
   }
   return true;
 }
