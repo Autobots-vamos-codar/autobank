@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import express from 'express';
 // import passport from '../middleware/estrategias.js';
 import AccountController from '../controllers/AccountsController.js';
