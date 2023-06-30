@@ -2,7 +2,6 @@
 import express from 'express';
 import passport from '../middlware/estrategias.js';
 import AccountController from '../controllers/AccountsController.js';
-// import token from '../middlware/tokenteste.js';
 
 const router = express.Router();
 
