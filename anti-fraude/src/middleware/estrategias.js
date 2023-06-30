@@ -21,13 +21,18 @@ passport.use(
     usernameField: 'email',
     passwordField: 'senha',
     session: false,
-  }, (email, senha, done) => {
-    Account.findOne({ 'email': email }, (err, user) => {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (!verifyPassword(senha, user.senha)) { return done(null, false); }
-      return done(null, user);
-    });
+  }, async (email, senha, done) => {
+    const findAccount = await Account.findOne({ 'email': email });
+    console.log(findAccount);
+
+    if (!findAccount) {
+      return done(null, false);
+    }
+    if (!verifyPassword(senha, findAccount.senha)) {
+      return done(null, false);
+    }
+
+    return done(null, findAccount);
   }),
 );
 
