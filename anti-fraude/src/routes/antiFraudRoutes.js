@@ -5,11 +5,11 @@ import { bearer } from '../middleware/autenticationMiddleware.js';
 const antiFraudRoutes = express.Router();
 
 antiFraudRoutes
-  .get('/api/antiFraud', AntiFraudController.findAllAntiFraud)
-  .get('/api/antiFraud/under-review', AntiFraudController.findAntiFraudUnderReview)
-  .get('/api/antiFraud/:id', AntiFraudController.findAntiFraudById)
+  .get('/api/antiFraud', bearer, AntiFraudController.findAllAntiFraud)
+  .get('/api/antiFraud/under-review', bearer, AntiFraudController.findAntiFraudUnderReview)
+  .get('/api/antiFraud/:id', bearer, AntiFraudController.findAntiFraudById)
   .post('/api/antiFraud', AntiFraudController.createAntiFraud)
   .patch('/api/antiFraud/:id', bearer, AntiFraudController.updateAntiFraud)
-  .delete('/api/antiFraud/:id', AntiFraudController.deleteAntiFraud);
+  .delete('/api/antiFraud/:id', bearer, AntiFraudController.deleteAntiFraud);
 
 export default antiFraudRoutes;
