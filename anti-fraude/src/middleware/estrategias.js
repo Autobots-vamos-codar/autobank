@@ -23,8 +23,7 @@ passport.use(
     session: false,
   }, async (email, senha, done) => {
     const findAccount = await Account.findOne({ 'email': email });
-    console.log(findAccount);
-
+    
     if (!findAccount) {
       return done(null, false);
     }
@@ -41,7 +40,6 @@ passport.use(
     async (token, done) => {
       try {
         const payload = jwt.verify(token, process.env.CHAVE_JWT);
-        console.log(payload);
         const usuario = await Account.findById(payload.id);
         done(null, usuario, { scope: 'all' });
       } catch (erro) {

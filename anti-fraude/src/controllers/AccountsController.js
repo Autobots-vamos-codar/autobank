@@ -47,12 +47,15 @@ class AccountController {
       ...req.body,
       createdDate: Date(),
     });
-    account.save((err, newAccount) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      return res.status(201).set('Location', `/admin/accounts/${account.id}`).json(newAccount);
-    });
+
+    const newAccount = account.save()
+    return res.status(201).set('Location', `/admin/accounts/${account.id}`).json(newAccount)
+    // account.save((err, newAccount) => {
+    //   if (err) {
+    //     return res.status(500).send({ message: err.message });
+    //   }
+    //   return res.status(201).set('Location', `/admin/accounts/${account.id}`).json(newAccount);
+    // });
   };
 
   static updateAccount = (req, res) => {

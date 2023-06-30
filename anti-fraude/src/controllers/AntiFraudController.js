@@ -57,15 +57,17 @@ class AntiFraudController {
         const accounts = await responseClient.json();
 
         const responseTransacao = await fetch(`http://${process.env.TRANSACOES_HOST || '127.0.0.1'}:3002/api/admin/transactions/${transactionId}`);
+        console.log(responseTransacao)
         const transacoes = await responseTransacao.json();
+        console.log(transacoes);
 
         const retorno = {
           _id: findById.id,
           status: findById.status,
           dadosPessoais: {
-            id: accounts.dadosPessoais.id, nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, rendaMensal: accounts.dadosPessoais.rendaMensal,
+            nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, rendaMensal: accounts.dadosPessoais.rendaMensal,
           },
-          endereco: accounts.endereco,
+          Endereco: accounts.Endereco,
           vencimentoDaFatura: accounts.vencimentoDaFatura,
           // eslint-disable-next-line no-underscore-dangle
           transacao: { _id: transacoes._id, valor: transacoes.valor },
