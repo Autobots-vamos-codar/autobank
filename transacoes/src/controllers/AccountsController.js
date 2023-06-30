@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Account from '../models/Account.js';

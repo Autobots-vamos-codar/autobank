@@ -67,6 +67,7 @@ class AntiFraudController {
           },
           endereco: accounts.endereco,
           vencimentoDaFatura: accounts.vencimentoDaFatura,
+          // eslint-disable-next-line no-underscore-dangle
           transacao: { _id: transacoes._id, valor: transacoes.valor },
         };
 
