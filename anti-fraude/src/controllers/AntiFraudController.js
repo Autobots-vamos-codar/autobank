@@ -63,7 +63,7 @@ class AntiFraudController {
           _id: findById.id,
           status: findById.status,
           dadosPessoais: {
-            id: accounts.dadosPessoais.id, nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, rendaMensal: accounts.dadosPessoais.rendaMensal, 
+            id: accounts.dadosPessoais.id, nome: accounts.dadosPessoais.nome, cpf: accounts.dadosPessoais.cpf, telefone: accounts.dadosPessoais.telefone, rendaMensal: accounts.dadosPessoais.rendaMensal,
           },
           endereco: accounts.endereco,
           vencimentoDaFatura: accounts.vencimentoDaFatura,
