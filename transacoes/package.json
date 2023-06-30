@@ -9,7 +9,7 @@
         "dev": "nodemon server.js",
         "lint": "eslint ./src/**/*.js",
         "lint:fix": "eslint ./src/**/*.js --fix",
-        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose",
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
         "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --watch"
     },
     "author": "",
@@ -18,8 +18,12 @@
         "bcryptjs": "^2.4.3",
         "dotenv": "^16.3.1",
         "express": "^4.17.3",
+        "jsonwebtoken": "^9.0.0",
         "mongoose": "^6.2.6",
         "node-fetch": "^3.3.1",
+        "passport": "^0.6.0",
+        "passport-http-bearer": "^1.0.1",
+        "passport-local": "^1.0.0",
         "swagger-ui-express": "^4.6.3",
         "yaml": "^2.2.2"
     },

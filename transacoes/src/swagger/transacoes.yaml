@@ -35,8 +35,17 @@ paths:
             application/json:
               schema:
                   $ref: "#/components/schemas/Transaction"
+        '400':
+          description: invalid data
         '401':
-          description: unauthorized
+          description: unauthorized transaction 
+        '500':
+          description: server error, data not sent
+        '404':
+          description: customer not found
+        '303':
+          description: redirecting to transaction detail
+
   /api/admin/transactions/{id}:
     get:
       summary: Find transaction
