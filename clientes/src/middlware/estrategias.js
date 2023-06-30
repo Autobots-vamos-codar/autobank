@@ -6,12 +6,6 @@ import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Account from '../models/Account.js';
 
-// function verificaUsuario(usuario) {
-//   if (!usuario) {
-//     throw new InvalidArgumentError('Não existe usuário com esse e-mail!');
-//   }
-// }
-
 async function verifyPassword(senha, senhaHash) {
   const senhaValida = await bcryptjs.compare(senha, senhaHash);
   if (!senhaValida) {
