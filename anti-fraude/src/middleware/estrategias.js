@@ -7,10 +7,10 @@ import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Account from '../models/Account.js';
 
-async function verifyPassword(senha, senhaHash) {
-  const senhaValida = await bcryptjs.compare(senha, senhaHash);
+function verifyPassword(senha, senhaHash) {
+  const senhaValida = bcryptjs.compareSync(senha, senhaHash);
   if (!senhaValida) {
-    throw new Error('E-mail ou senha inválidos!');
+    return false;
   }
 
   return true;
@@ -21,7 +21,7 @@ passport.use(
     usernameField: 'email',
     passwordField: 'senha',
     session: false,
-  }, async (email, senha, done) => {
+  }, (email, senha, done) => {
     Account.findOne({ 'email': email }, (err, user) => {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
