@@ -1,10 +1,10 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import { Strategy as BearerStrategy } from 'passport-http-bearer';
+import BearerStrategy from 'passport-http-bearer';
 
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import Account from '../models/Account';
+import Account from '../models/Account.js';
 
 // function verificaUsuario(usuario) {
 //   if (!usuario) {
@@ -36,17 +36,20 @@ passport.use(
   }),
 );
 
-// passport.use(
-//   new BearerStrategy(
-//     async (token, done) => {
-//       try {
-//         await verificaTokenNaBlacklist(token);
-//         const payload = jwt.verify(token, process.env.CHAVE_JWT);
-//         const usuario = await Usuario.buscaPorId(payload.id);
-//         done(null, usuario, { token });
-//       } catch (erro) {
-//         done(erro);
-//       }
-//     },
-//   ),
-// );
+passport.use(
+  new BearerStrategy(
+    async (token, done) => {
+      try {
+        const payload = jwt.verify(token, process.env.CHAVE_JWT);
+        console.log(payload);
+        const usuario = await Account.findById(payload.id);
+        done(null, usuario, { scope: 'all' });
+      } catch (erro) {
+        console.log(erro);
+        done(erro);
+      }
+    },
+  ),
+);
+
+export default passport;
