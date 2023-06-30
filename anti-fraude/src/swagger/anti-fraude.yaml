@@ -72,9 +72,9 @@ paths:
           description: not found
         '500':
           description: error
-    put:
-      summary: Update antifraud
-      description: Update antifraud by entering the whole updated antifraud data
+    patch:
+      summary: Update antifraud status
+      description: Update antifraud by status under-review to approved or rejected
       parameters:
       - name: id
         in: path
