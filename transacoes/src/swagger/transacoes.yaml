@@ -11,6 +11,12 @@ paths:
     get:
       summary: List transactions
       description: List all transactions
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
       responses:
         '200':
           description: ok
@@ -23,6 +29,12 @@ paths:
     post:
       summary: Add transaction
       description: Add new transaction
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
       requestBody:
         content:
           application/json:
@@ -57,6 +69,11 @@ paths:
           required: true
           schema:
             type: string
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
       responses:
         '200':
           description: ok
@@ -91,23 +108,7 @@ paths:
           description: invalid id or status
         '401':
           description: unauthorized
-    # delete:
-    #   summary: Delete account
-    #   description: Delete account by entering its ID
-    #   parameters:
-    #   - name: id
-    #     in: path
-    #     description: ID of account that needs to be deleted
-    #     required: true
-    #     schema:
-    #       type: string
-    #   responses:
-    #     '204':
-    #       description: no content
-    #     '401':
-    #       description: unauthorized
-    #     '400':
-    #       description: invalid ID supplied
+    
 components:
   schemas:
     Transaction:
