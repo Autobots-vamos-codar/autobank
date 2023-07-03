@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "74e4614d-83bf-4a03-9df6-467bed7eec32",
+		"_postman_id": "971e5905-fa28-4cc9-b973-428530140205",
 		"name": "Autobank",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27711228"
 	},
 	"item": [
 		{
@@ -26,12 +27,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3001/api/admin/accounts",
-									"protocol": "http",
+									"raw": "{{clienteDomain}}/api/admin/accounts",
 									"host": [
-										"localhost"
+										"{{clienteDomain}}"
 									],
-									"port": "3001",
 									"path": [
 										"api",
 										"admin",
@@ -44,6 +43,9 @@
 						{
 							"name": "Login Account",
 							"request": {
+								"auth": {
+									"type": "noauth"
+								},
 								"method": "POST",
 								"header": [],
 								"body": {
@@ -56,12 +58,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3001/api/accounts/login",
-									"protocol": "http",
+									"raw": "{{clienteDomain}}/api/accounts/login",
 									"host": [
-										"localhost"
+										"{{clienteDomain}}"
 									],
-									"port": "3001",
 									"path": [
 										"api",
 										"accounts",
@@ -80,7 +80,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n    \"numeroCartao\": \"5109405218436136\",\r\n    \"validade\": \"09/25\",\r\n    \"cvc\": 516,\r\n    \"nomeTitular\": \"FLAVIA A GOMES\",\r\n    \"valorTransacao\": 500\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -88,12 +88,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3001/api/admin/clients",
-							"protocol": "http",
+							"raw": "{{clienteDomain}}/api/admin/clients",
 							"host": [
-								"localhost"
+								"{{clienteDomain}}"
 							],
-							"port": "3001",
 							"path": [
 								"api",
 								"admin",
@@ -104,12 +102,112 @@
 					"response": []
 				},
 				{
-					"name": "Detalhamento de cliente",
+					"name": "Cliente por Id",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{clienteDomain}}/api/admin/clients/649ed1a4badaa158ab5f402c",
+							"host": [
+								"{{clienteDomain}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"clients",
+								"649ed1a4badaa158ab5f402c"
+							]
+						}
 					},
 					"response": []
+				},
+				{
+					"name": "Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{clienteDomain}}/api/admin/ping",
+							"host": [
+								"{{clienteDomain}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// console.log(\" email:\", pm.globals.get(\"emailAccount\"));",
+							"// console.log(\" email:\", pm.globals.get(\"senhaAccount\"));",
+							"",
+							"function genearateNewToken(){",
+							"    console.log('Buscando novo token');",
+							"        pm.sendRequest({",
+							"        url: pm.globals.get(\"clienteDomain\") + '/api/accounts/login',",
+							"        method: 'POST',",
+							"        header: {",
+							"        'content-type': 'application/json'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({ ",
+							"            email: pm.globals.get(\"emailAccount\"), ",
+							"            senha: pm.globals.get(\"senhaAccount\") })",
+							"        }",
+							"        }, function (err, res) {",
+							"                console.log(\"authorization =  \" + res.headers.get('Authorization'));",
+							"                console.log(\"Salvando novo token\");",
+							"                pm.globals.set(\"token\" , res.headers.get('Authorization'));",
+							"            });",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"        url: pm.globals.get(\"clienteDomain\") + '/api/admin/ping',",
+							"        method: 'GET',",
+							"        header: {",
+							"        'Authorization': 'Bearer ' + pm.globals.get('token')",
+							"    }",
+							"}, function (err, res) {",
+							"     console.log(\"aqui \" + res.status + res.code);",
+							"    if(res.code === 401 || res.code === 402 || res.code === 500){",
+							"        genearateNewToken();",
+							"        }",
+							"        else{",
+							"            console.log('Token válido');",
+							"        }",
+							"});",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -134,12 +232,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3001/api/admin/accounts",
-									"protocol": "http",
+									"raw": "{{transacaoDomain}}/api/admin/accounts",
 									"host": [
-										"localhost"
+										"{{transacaoDomain}}"
 									],
-									"port": "3001",
 									"path": [
 										"api",
 										"admin",
@@ -152,6 +248,9 @@
 						{
 							"name": "Login Account",
 							"request": {
+								"auth": {
+									"type": "noauth"
+								},
 								"method": "POST",
 								"header": [],
 								"body": {
@@ -164,12 +263,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3001/api/accounts/login",
-									"protocol": "http",
+									"raw": "{{transacaoDomain}}/api/accounts/login",
 									"host": [
-										"localhost"
+										"{{transacaoDomain}}"
 									],
-									"port": "3001",
 									"path": [
 										"api",
 										"accounts",
@@ -188,25 +285,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.sendRequest({\r",
-									"url: pm.globals.get(\"transacaoDomain\") + '/api/accounts/login',\r",
-									"method: 'POST',\r",
-									"header: {\r",
-									"'content-type': 'application/json'\r",
-									"},\r",
-									"body: {\r",
-									"mode: 'raw',\r",
-									"raw: JSON.stringify({ \r",
-									"email: pm.globals.get(\"emailAccount\"), \r",
-									"senha: pm.globals.get(\"senhaAccount\") })\r",
-									"}\r",
-									"}, function (err, res) {\r",
-									"    const cabecalho = {...res.headers}\r",
-									"    console.log('oi')\r",
-									"    console.log(res)\r",
-									"    console.log(cabecalho.members[1].value)\r",
-									"    pm.globals.set(\"token\" , 'Bearer' + cabecalho.members[1].value);\r",
-									"});\r",
 									""
 								],
 								"type": "text/javascript"
@@ -216,24 +294,13 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var jsonData = pm.response.json()\r",
-									"pm.globals.set('idTransacao', jsonData._id)"
+									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -246,12 +313,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3002/api/admin/transactions",
-							"protocol": "http",
+							"raw": "{{transacaoDomain}}/api/admin/transactions",
 							"host": [
-								"localhost"
+								"{{transacaoDomain}}"
 							],
-							"port": "3002",
 							"path": [
 								"api",
 								"admin",
@@ -263,28 +328,14 @@
 				},
 				{
 					"name": "Listar todas transações",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"nomeTitular\": \"FLAVIA A GOMES\",\r\n    \"valor\": 50,\r\n    \"status\": \"aprovada\",\r\n    \"clientId\": \"649ed1a4badaa158ab5f402c\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "http://localhost:3002/api/admin/transactions",
-							"protocol": "http",
+							"raw": "{{transacaoDomain}}/api/admin/transactions",
 							"host": [
-								"localhost"
+								"{{transacaoDomain}}"
 							],
-							"port": "3002",
 							"path": [
 								"api",
 								"admin",
@@ -295,7 +346,7 @@
 					"response": []
 				},
 				{
-					"name": "Detalhamento da transação Copy",
+					"name": "Transação por id",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -312,16 +363,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3002/api/admin/transactions",
-							"protocol": "http",
+							"raw": "{{transacaoDomain}}/api/admin/transactions/649f2e76badaa158ab5f4042",
 							"host": [
-								"localhost"
+								"{{transacaoDomain}}"
 							],
-							"port": "3002",
 							"path": [
 								"api",
 								"admin",
-								"transactions"
+								"transactions",
+								"649f2e76badaa158ab5f4042"
 							]
 						}
 					},
@@ -332,30 +382,114 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"nomeTitular\": \"FLAVIA A GOMES\",\r\n    \"valor\": 50,\r\n    \"status\": \"aprovada\",\r\n    \"clientId\": \"649ed1a4badaa158ab5f402c\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "http://localhost:3002/api/admin/transactions",
-							"protocol": "http",
+							"raw": "{{transacaoDomain}}/api/admin/transactions/64a2bf06808894ca8d07a5f3?status=rejeitada",
 							"host": [
-								"localhost"
+								"{{transacaoDomain}}"
 							],
-							"port": "3002",
 							"path": [
 								"api",
 								"admin",
-								"transactions"
+								"transactions",
+								"64a2bf06808894ca8d07a5f3"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "rejeitada"
+								}
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{transacaoDomain}}/api/admin/ping",
+							"host": [
+								"{{transacaoDomain}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// console.log(\" email:\", pm.globals.get(\"emailAccount\"));",
+							"// console.log(\" email:\", pm.globals.get(\"senhaAccount\"));",
+							"",
+							"function genearateNewToken(){",
+							"    console.log('Buscando novo token');",
+							"        pm.sendRequest({",
+							"        url: pm.globals.get(\"transacaoDomain\") + '/api/accounts/login',",
+							"        method: 'POST',",
+							"        header: {",
+							"        'content-type': 'application/json'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({ ",
+							"            email: pm.globals.get(\"emailAccount\"), ",
+							"            senha: pm.globals.get(\"senhaAccount\") })",
+							"        }",
+							"        }, function (err, res) {",
+							"                console.log(\"aqui \" + res.headers.get('Authorization'));",
+							"                console.log(\"Salvando novo token\");",
+							"                pm.globals.set(\"token\" , res.headers.get('Authorization'));",
+							"            });",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"        url: pm.globals.get(\"transacaoDomain\") + '/api/admin/ping',",
+							"        method: 'GET',",
+							"        header: {",
+							"        'Authorization': 'Bearer ' + pm.globals.get('token')",
+							"    }",
+							"}, function (err, res) {",
+							"     console.log(\"aqui \" + res.status + res.code);",
+							"    if(res.code === 401 || res.code === 402 || res.code === 500){",
+							"        genearateNewToken();",
+							"        }",
+							"        else{",
+							"            console.log('Token válido');",
+							"        }",
+							"});",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -380,12 +514,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3001/api/admin/accounts",
-									"protocol": "http",
+									"raw": "{{antiFraudeDomain}}/api/admin/accounts",
 									"host": [
-										"localhost"
+										"{{antiFraudeDomain}}"
 									],
-									"port": "3001",
 									"path": [
 										"api",
 										"admin",
@@ -398,6 +530,9 @@
 						{
 							"name": "Login Account",
 							"request": {
+								"auth": {
+									"type": "noauth"
+								},
 								"method": "POST",
 								"header": [],
 								"body": {
@@ -410,12 +545,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3001/api/accounts/login",
-									"protocol": "http",
+									"raw": "{{antiFraudeDomain}}/api/accounts/login",
 									"host": [
-										"localhost"
+										"{{antiFraudeDomain}}"
 									],
-									"port": "3001",
 									"path": [
 										"api",
 										"accounts",
@@ -442,12 +575,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/antiFraud",
-							"protocol": "http",
+							"raw": "{{antiFraudeDomain}}/api/antiFraud",
 							"host": [
-								"localhost"
+								"{{antiFraudeDomain}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"antiFraud"
@@ -457,14 +588,14 @@
 					"response": []
 				},
 				{
-					"name": "Listar anti-fraude",
+					"name": "Lista todas",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWYxZTlkMWU4ZGE1NDIxMzIxY2Q5ZCIsImlhdCI6MTY4ODE1MTUzMywiZXhwIjoxNjg4MTUyNDMzfQ.cS8x5AC-5r4OXMPV_-36tjSAbfHGA1U47mnafXr9vDE",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -472,12 +603,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/antiFraud",
-							"protocol": "http",
+							"raw": "{{antiFraudeDomain}}/api/antiFraud",
 							"host": [
-								"localhost"
+								"{{antiFraudeDomain}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"antiFraud"
@@ -487,60 +616,38 @@
 					"response": []
 				},
 				{
-					"name": "Detalhamento anti-fraude",
+					"name": "Lista por id",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWYxZTlkMWU4ZGE1NDIxMzIxY2Q5ZCIsImlhdCI6MTY4ODE1MTUzMywiZXhwIjoxNjg4MTUyNDMzfQ.cS8x5AC-5r4OXMPV_-36tjSAbfHGA1U47mnafXr9vDE",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/antiFraud",
-							"protocol": "http",
+							"raw": "{{antiFraudeDomain}}/api/antiFraud/649ed0f187b9368eb30711ad",
 							"host": [
-								"localhost"
+								"{{antiFraudeDomain}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
-								"antiFraud"
+								"antiFraud",
+								"649ed0f187b9368eb30711ad"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Filltro de status",
+					"name": "Under-Review",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWYxZTlkMWU4ZGE1NDIxMzIxY2Q5ZCIsImlhdCI6MTY4ODE1MTUzMywiZXhwIjoxNjg4MTUyNDMzfQ.cS8x5AC-5r4OXMPV_-36tjSAbfHGA1U47mnafXr9vDE",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/antiFraud",
-							"protocol": "http",
+							"raw": "{{antiFraudeDomain}}/api/antiFraud/under-review",
 							"host": [
-								"localhost"
+								"{{antiFraudeDomain}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
-								"antiFraud"
+								"antiFraud",
+								"under-review"
 							]
 						}
 					},
@@ -562,12 +669,10 @@
 						"method": "PATCH",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/antiFraud/649ed0e987b9368eb30711a8",
-							"protocol": "http",
+							"raw": "{{antiFraudeDomain}}/api/antiFraud/649ed0e987b9368eb30711a8",
 							"host": [
-								"localhost"
+								"{{antiFraudeDomain}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"antiFraud",
@@ -580,33 +685,112 @@
 				{
 					"name": "Deletar anti-fraude",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWYzZGExYzc5ZmIwZjI2OThkNTkzZSIsImlhdCI6MTY4ODM4NTM3MCwiZXhwIjoxNjg4Mzg2MjcwfQ.ooL8JBekrsJfHhfgS9KC1p2O2r5Uy83wUpIMuDLP_58",
-									"type": "string"
-								}
-							]
-						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/antiFraud/649ed0e987b9368eb30711a8",
-							"protocol": "http",
+							"raw": "{{antiFraudeDomain}}/api/antiFraud/649ed0f087b9368eb30711ab",
 							"host": [
-								"localhost"
+								"{{antiFraudeDomain}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"antiFraud",
-								"649ed0e987b9368eb30711a8"
+								"649ed0f087b9368eb30711ab"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{antiFraudeDomain}}/api/admin/ping",
+							"host": [
+								"{{antiFraudeDomain}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// console.log(\" email:\", pm.globals.get(\"emailAccount\"));",
+							"// console.log(\" email:\", pm.globals.get(\"senhaAccount\"));",
+							"",
+							"function genearateNewToken(){",
+							"    console.log('Buscando novo token');",
+							"        pm.sendRequest({",
+							"        url: pm.globals.get(\"antiFraudeDomain\") + '/api/accounts/login',",
+							"        method: 'POST',",
+							"        header: {",
+							"        'content-type': 'application/json'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({ ",
+							"            email: pm.globals.get(\"emailAccount\"), ",
+							"            senha: pm.globals.get(\"senhaAccount\") })",
+							"        }",
+							"        }, function (err, res) {",
+							"                console.log(\"Authorization =  \" + res.headers.get('Authorization'));",
+							"                console.log(\"Salvando novo token\");",
+							"                pm.globals.set(\"token\" , res.headers.get('Authorization'));",
+							"            });",
+							"}",
+							"",
+							"console.log(pm.globals.get(\"antiFraudeDomain\") + '/api/admin/ping');",
+							"",
+							"pm.sendRequest({",
+							"        url: pm.globals.get(\"antiFraudeDomain\") + '/api/admin/ping',",
+							"        method: 'GET',",
+							"        header: {",
+							"        'Authorization': 'Bearer ' + pm.globals.get('token')",
+							"    }",
+							"}, function (err, res) {",
+							"     console.log(\"statusCode =  \" + res.status + res.code);",
+							"    if(res.code === 401 || res.code === 402 || res.code === 500){",
+							"        console.log('Criando novo token');",
+							"        genearateNewToken();",
+							"        }",
+							"        else{",
+							"            console.log('Token válido');",
+							"        }",
+							"});",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		}
