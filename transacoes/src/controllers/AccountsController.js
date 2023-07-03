@@ -25,6 +25,8 @@ class AccountController {
     });
   };
 
+  static ping = (_req, res) => res.status(200).send('pong');
+
   static findAccountById = (req, res) => {
     const { id } = req.params;
     Account.findById(id, (err, account) => {

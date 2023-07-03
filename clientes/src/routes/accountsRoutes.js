@@ -6,6 +6,7 @@ import { bearer, local } from '../middleware/autenticationMiddleware.js';
 const router = express.Router();
 
 router
+  .get('/api/admin/ping', bearer, AccountController.ping)
   .get('/api/admin/accounts', bearer, AccountController.findAccounts)
   .get('/api/admin/accounts/:id', AccountController.findAccountById)
   .post('/api/admin/accounts', AccountController.createAccount)
