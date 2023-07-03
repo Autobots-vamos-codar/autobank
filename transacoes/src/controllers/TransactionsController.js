@@ -88,7 +88,6 @@ class TransactionsController {
   static createTransaction = async (req, res) => {
     console.log('Iniciando createTransaction');
     const transaction = await TransactionService.processTransaction(req.body);
-    console.log(transaction);
     if (!transaction.statusResponse) {
       return res.status(500).send({ message: 'Erro interno no servidor, os dados não foram enviados!', error: transaction.error });
     }

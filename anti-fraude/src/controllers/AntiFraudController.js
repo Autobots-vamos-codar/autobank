@@ -55,12 +55,10 @@ class AntiFraudController {
       } else {
         const responseClient = await fetch(`http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${clientId}`);
         const accounts = await responseClient.json();
-
+        
         const responseTransacao = await fetch(`http://${process.env.TRANSACOES_HOST || '127.0.0.1'}:3002/api/admin/transactions/${transactionId}`);
-        console.log(responseTransacao)
         const transacoes = await responseTransacao.json();
-        console.log(transacoes);
-
+              
         const retorno = {
           _id: findById.id,
           status: findById.status,
