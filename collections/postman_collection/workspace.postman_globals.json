@@ -1,0 +1,51 @@
+{
+	"id": "84f66cc5-a36f-40ed-8d97-d5d99823a627",
+	"values": [
+		{
+			"key": "transacaoDomain",
+			"value": "http://localhost:3002",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "emailAccount",
+			"value": "admin@admin.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "senhaAccount",
+			"value": "123456",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWVlNzI2NmQyMjMyOGM1Y2JiODhlNiIsImlhdCI6MTY4ODM5MTM3MiwiZXhwIjoxNjg4MzkyMjcyfQ.sdWEHd6SseShrUx9DPAbe3Wz5r3eKkSqmxE2xIlv53g",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "idTransacao",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "antiFraudeDomain",
+			"value": "http://localhost:3000",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "clienteDomain",
+			"value": "http://localhost:3001",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2023-07-03T15:51:21.854Z",
+	"_postman_exported_using": "Postman/9.31.27"
+}
