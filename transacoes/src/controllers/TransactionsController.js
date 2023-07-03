@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcryptjs from 'bcryptjs';
-import MongoService from '../services/MongoService.mjs';
+import MongoService from '../services/MongoService.js';
 import Transaction from '../models/transaction.js';
 import TransactionService from '../services/TransactionService.js';
 import Account from '../models/Account.js';
