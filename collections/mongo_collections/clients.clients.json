@@ -1,0 +1,27 @@
+[{
+  "_id": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "dadosPessoais": {
+    "nome": "Flávia Andrea Rita Gomes",
+    "cpf": "41953330835",
+    "email": "flavia-gomes74@alkbrasil.com.br",
+    "telefone": "3137337860",
+    "rendaMensal": 10750
+  },
+  "endereco": {
+    "rua": "Rua José Pedro Machado",
+    "numero": 260,
+    "complemento": "ap22",
+    "cep": "35930727",
+    "cidade": "João Monlevade",
+    "estado": "MG"
+  },
+  "dadosCartao": {
+    "numeroCartao": "5109405218436136",
+    "validade": "09/25",
+    "cvc": 516,
+    "diaVencimentoFatura": 25,
+    "nomeTitular": "FLAVIA A GOMES"
+  }
+}]

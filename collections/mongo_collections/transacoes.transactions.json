@@ -1,0 +1,55 @@
+[{
+  "_id": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "nomeTitular": "Flávia",
+  "valor": 1000,
+  "status": "rejeitada",
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  }
+},{
+  "_id": {
+    "$oid": "64a2b4672e0234fa08f0f2b5"
+  },
+  "nomeTitular": "FLAVIA A GOMES",
+  "valor": 500,
+  "status": "Aprovada",
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64a2b4932e0234fa08f0f2b7"
+  },
+  "nomeTitular": "FLAVIA A GOMES",
+  "valor": 50000,
+  "status": "rejeitada",
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64a2bb39ba3a178b4ea2691d"
+  },
+  "nomeTitular": "FLAVIA A GOMES",
+  "valor": 50000,
+  "status": "rejeitada",
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64a2bf06808894ca8d07a5f3"
+  },
+  "nomeTitular": "FLAVIA A GOMES",
+  "valor": 50000,
+  "status": "Em análise",
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "__v": 0
+}]

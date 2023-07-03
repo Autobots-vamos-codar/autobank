@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "649f36dd8a12a53841de2691"
+  },
+  "nome": "Adm",
+  "email": "adm@mail.com",
+  "senha": "$2a$12$LhkaCKQvVKvWUrVTXelFmOaGsZylEWtkIEVYHkei9Wu8H3HKC3Rby",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "649f3bc7baf122b2324327ad"
+  },
+  "nome": "Adm",
+  "email": "adm@mail.com",
+  "senha": "$2a$12$66oSDVgrZy1.BiZnzQTxgudx9RqngoqrIRg5e4Ihy5hILzlAgvXFa",
+  "__v": 0
+}]

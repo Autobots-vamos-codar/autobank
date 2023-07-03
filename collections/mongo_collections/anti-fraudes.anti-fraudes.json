@@ -1,0 +1,188 @@
+[{
+  "_id": {
+    "$oid": "649ed0f087b9368eb30711ab"
+  },
+  "clientId": {
+    "$oid": "649d80e64a496cdd3ad0a4aa"
+  },
+  "transactionId": {
+    "$oid": "649c33d2c0db258605f53b89"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "649ed0f187b9368eb30711ad"
+  },
+  "clientId": {
+    "$oid": "649d80e64a496cdd3ad0a4aa"
+  },
+  "transactionId": {
+    "$oid": "649c33d2c0db258605f53b89"
+  },
+  "status": "rejeitada"
+},{
+  "_id": {
+    "$oid": "649ed27401c39f368efc9296"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649c33d2c0db258605f53b89"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "649ed45a01c39f368efc929a"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649ed3c69617eb50608f0a55"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "649f2fad50ccb24f240960e3"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "aprovada"
+},{
+  "_id": {
+    "$oid": "649f3b986258baf08069f546"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2b4939feb5b0825c36199"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "64a2b4932e0234fa08f0f2b7"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2b6eabe3d46751cc9fe9a"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2bb3930b0796d6f31a83f"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "64a2bb39ba3a178b4ea2691d"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2bb7930b0796d6f31a843"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2bc4672da2021ac7aba00"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2bca9ddf330361b993e72"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2bf0686c5a6c05f27189c"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "64a2bf06808894ca8d07a5f3"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2bf3c86c5a6c05f2718a0"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2c0be86c5a6c05f2718ab"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2c39a86c5a6c05f2718ad"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+},{
+  "_id": {
+    "$oid": "64a2c3de86c5a6c05f2718af"
+  },
+  "clientId": {
+    "$oid": "649ed1a4badaa158ab5f402c"
+  },
+  "transactionId": {
+    "$oid": "649f2e76badaa158ab5f4042"
+  },
+  "status": "em análise"
+}]
