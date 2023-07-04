@@ -4,20 +4,20 @@ import {
 import request from 'supertest';
 import app from '../../app.js';
 
-let server;
+let token = '';
 
-beforeEach(() => {
-  const port = 3000;
-  server = app.listen(port);
-});
+describe('Logar na conta', () => {
+  it('Deve retornar logar a conta', async () => {
+    const loggedAccount = await request(app)
+      .post('/api/accounts/login')
+      .set('Accept', 'application/json')
+      .send({
+        email: 'admautobank@gmail.com',
+        senha: 'admadm',
+      });
 
-afterEach(() => {
-  server.close();
-});
-
-afterAll((done) => {
-  server.close();
-  done();
+    token = await loggedAccount.header.authorization;
+  });
 });
 
 describe('GET em /api/antiFraud', () => {
@@ -25,6 +25,7 @@ describe('GET em /api/antiFraud', () => {
     await request(app)
       .get('/api/antiFraud')
       .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
       .expect('content-type', /json/)
       .expect(200);
   });
@@ -37,10 +38,11 @@ describe('POST em /api/antiFraud', () => {
     const resposta = await request(app)
       .post('/api/antiFraud')
       .send({
-        clientId: '649c9aa6fa5e6eb735914a53',
-        transactionId: '649dc35200cc7a3a9e1c7fca',
+        clientId: '649ed1a4badaa158ab5f402c',
+        transactionId: '64a2bf06808894ca8d07a5f3',
       })
       .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
       .expect('content-type', /json/)
       .expect(201);
 
@@ -50,6 +52,7 @@ describe('POST em /api/antiFraud', () => {
     await request(app)
       .post('/api/antiFraud')
       .send({})
+      .set('Authorization', `Bearer ${token}`)
       .expect(500);
   });
 });
@@ -58,6 +61,7 @@ describe('GET em /api/antiFraud/:id', () => {
   it('Deve retornar o detalhamento da Análise pelo ID', async () => {
     await request(app)
       .get(`/api/antiFraud/${idResposta}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
 });
@@ -66,6 +70,7 @@ describe('GET em /api/antiFraud/under-review', () => {
   it('Deve retornar todas as Análises com o status "em análise"', async () => {
     await request(app)
       .get('/api/antiFraud/under-review')
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
 });
@@ -79,6 +84,7 @@ describe('PATCH em /api/antiFraud/:id', () => {
     const spy = jest.spyOn(requisicao, 'request');
     await requisicao.request(app)
       .patch(`/api/antiFraud/${idResposta}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(param)
       .expect(200);
 
@@ -90,6 +96,7 @@ describe('DELETE em /api/antiFraud/:id', () => {
   it('Deletar a analise de anti-fraude selecionada', async () => {
     await request(app)
       .delete(`/api/antiFraud/${idResposta}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204);
   });
 });
