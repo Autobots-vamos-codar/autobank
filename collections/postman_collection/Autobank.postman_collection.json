@@ -50,7 +50,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"senha\": \"admin\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -74,7 +74,7 @@
 					]
 				},
 				{
-					"name": "Dados do cliente para transação",
+					"name": "VerificaDados",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -255,7 +255,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"senha\": \"admin\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -279,7 +279,7 @@
 					]
 				},
 				{
-					"name": "Criar transação",
+					"name": "CriaTransação",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -378,7 +378,7 @@
 					"response": []
 				},
 				{
-					"name": "Detalhamento da transação Copy 2",
+					"name": "Atualização status",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -537,7 +537,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"senha\": \"admin\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -635,7 +635,7 @@
 					"response": []
 				},
 				{
-					"name": "Under-Review",
+					"name": "Listar Under-Review",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -661,22 +661,31 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWYxZTlkMWU4ZGE1NDIxMzIxY2Q5ZCIsImlhdCI6MTY4ODE1MTUzMywiZXhwIjoxNjg4MTUyNDMzfQ.cS8x5AC-5r4OXMPV_-36tjSAbfHGA1U47mnafXr9vDE",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"aprovada\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{antiFraudeDomain}}/api/antiFraud/649ed0e987b9368eb30711a8",
+							"raw": "{{antiFraudeDomain}}/api/antiFraud/64a302485bb1422551ac7507",
 							"host": [
 								"{{antiFraudeDomain}}"
 							],
 							"path": [
 								"api",
 								"antiFraud",
-								"649ed0e987b9368eb30711a8"
+								"64a302485bb1422551ac7507"
 							]
 						}
 					},
