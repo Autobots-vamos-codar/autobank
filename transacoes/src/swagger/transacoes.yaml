@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Clientes API
+  title: Transações API
   description: |-
-    API do microsserviço de Clientes
+    API de transações
   version: 0.0.1
 servers:
   - url: http://localhost:3002
