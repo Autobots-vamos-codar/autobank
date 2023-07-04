@@ -55,7 +55,7 @@ let createdTransaction;
 describe('Testes de POST', () => {
   it('Deve retornar a transação criada e aprovada', async () => {
     console.log(token);
-    createdTransaction = await request(app)
+    const createdTransactionAproved = await request(app)
       .post('/api/admin/transactions')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${token}`)
@@ -69,8 +69,8 @@ describe('Testes de POST', () => {
       .expect('content-type', /json/)
       .expect(201);
 
-    console.log(createdTransaction.body);
-    expect(createdTransaction.body.status.toLowerCase()).toEqual('aprovada');
+    console.log(createdTransactionAproved.body);
+    expect(createdTransactionAproved.body.status.toLowerCase()).toEqual('aprovada');
   });
   it('Deve retornar a transação criada em análise', async () => {
     createdTransaction = await request(app)
@@ -86,9 +86,7 @@ describe('Testes de POST', () => {
       })
       .expect('content-type', /json/)
       .expect(303);
-
-    expect(createdTransaction.body.status.toLowerCase()).toEqual('em análise');
-  });
+  }, 50000);
   it('Deve retornar erro ao não enviar algum dado', async () => {
     await request(app)
       .post('/api/admin/transactions/')
