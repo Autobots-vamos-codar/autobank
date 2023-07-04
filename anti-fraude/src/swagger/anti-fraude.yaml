@@ -100,6 +100,39 @@ paths:
           description: analise não encontrada
         '500':
           description: error
+    patch:
+      tags:
+        - Anti-fraude
+      summary: atualizar o status de uma analise
+      description: atualizar pelo id o status da analise anti-fraude
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: true
+      - name: id
+        in: path
+        description: Id da analise que sera atualizada
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: "#/components/schemas/AntiFraudStatus"
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/AntiFraudUpdate"
+        '400':
+          description: invalid ID supplied
+        '401':
+          description: unauthorized
     delete:
       tags:
       - Anti-fraude
@@ -236,3 +269,24 @@ components:
             valor: 
               type: number
               example: 50000
+    AntiFraudUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '649c86a6a7797f8841511dd4'
+        clientId:
+          type: string
+          example: "649c4533100dc63fbe807107"
+        transactionId:
+          type: string
+          example: "649c4533100dc63fbe807108"
+        status:
+          type: string
+          example: "Aprovada"
+    AntiFraudStatus: 
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'Em análise'
