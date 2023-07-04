@@ -6,11 +6,22 @@ info:
   version: 0.0.1
 servers:
   - url: http://localhost:3000
+tags:
+  - name: Anti-fraude
+    description: Informações sobre as analises anti-fraude
 paths:
   /api/antiFraud:
     get:
-      summary: list Antifraud
-      description: list all antifraud
+      tags:
+      - Anti-fraude
+      summary: listar anti-fraude
+      description: listar todas as analises anti-fraude
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
       responses:
         '200':
           description: ok
@@ -21,13 +32,21 @@ paths:
                 items:
                   $ref: "#/components/schemas/AntiFraud"
     post:
-      summary: Add Antifraud
-      description: Add new Antifraud
+      tags:
+        - Anti-fraude
+      summary: Adicionar anti-fraude
+      description: criar uma analise anti-fraude com status 'Em análise' como default
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AntiFraud"
+              $ref: "#/components/schemas/AntiFraudPost"
       responses:
         '201':
           description: created
@@ -39,8 +58,16 @@ paths:
           description: error
   /api/antiFraud/under-review:
     get:
-      summary: list Antifraud with status under review
-      description: list antifraud with status under review
+      tags:
+      - Anti-fraude
+      summary: listar anti-fraude com status 'em análise'
+      description: listar todas as análise anti-fraude com status 'em análise'
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
       responses:
         '200':
           description: ok
@@ -52,12 +79,19 @@ paths:
                   $ref: "#/components/schemas/AntiFraud"
   /api/antiFraud/{id}:
     get:
-      summary: Find antifraud by id
-      description: Find one specific antifraud
+      tags:
+      - Anti-fraude
+      summary: Encontar analise por id
+      description: encontrar uma analise anti-fraude especifica
       parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
         - name: id
           in: path
-          description: ID of antifraud that needs to be fetched
+          description: Id da analise anti-fraude
           required: true
           schema:
             type: string
@@ -67,52 +101,33 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/AntiFraud"
+                  $ref: "#/components/schemas/AntiFraudById"
         '400':
-          description: not found
-        '500':
-          description: error
-    patch:
-      summary: Update antifraud status
-      description: Update antifraud by status under-review to approved or rejected
-      parameters:
-      - name: id
-        in: path
-        description: ID of antifraud that needs to be updated
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-                $ref: "#/components/schemas/AntiFraud"
-      responses:
-        '200':
-          description: ok
-          content:
-            application/json:
-              schema:
-                  $ref: "#/components/schemas/AntiFraud"
-        '400':
-          description: not faund
+          description: analise não encontrada
         '500':
           description: error
     delete:
-      summary: Delete antifraud
-      description: Delete antifraud by entering its ID
+      tags:
+      - Anti-fraude
+      summary: Deletar analise anti-fraude
+      description: Deleta uma analise pelo seu id
       parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: true
       - name: id
         in: path
-        description: ID of antifraud that needs to be deleted
+        description: Id da analise que precisa ser deletada
         required: true
         schema:
           type: string
       responses:
         '204':
-          description: no content
+          description: sucesso
         '404':
-          description: not found
+          description: analise nao encontrada
         '500':
           description: error
 components:
@@ -122,9 +137,108 @@ components:
       properties:
         id:
           type: string
+          example: '649c86a6a7797f8841511dd4'
         clientId:
           type: string
+          example: "649c4533100dc63fbe807107"
         transactionId:
           type: string
+          example: "649c4533100dc63fbe807108"
         status:
           type: string
+          example: "Em análise"
+    AntiFraudPost: 
+      type: object
+      properties: 
+        clientId:
+          type: string
+          example: "649c4533100dc63fbe807107"
+        transactionId: 
+          type: string
+          example: "649c4533100dc63fbe807108"
+    AntiFraudById: 
+      type: object
+      properties: 
+        id:
+          type: string
+          example: '649c86a6a7797f8841511dd4' 
+        status:
+          type: string
+          example: "Em análise"
+        dadosPessoais: 
+          type: object
+          properties:
+            nome:
+              type: string
+              example: "Aurora Sabrina Ramos"
+            cpf:
+              type: string
+              example: "41286390958"
+            telefone:
+              type: string
+              example: "6127726328"
+            rendaMensal:
+              type: number
+              example: 7300
+        Endereco:
+          type: object
+          properties:
+            rua:
+              type: string
+              example: "Rua Adilson Lisboa"
+            numero:
+              type: string
+              example: "167"
+            complemento:
+              type: string
+              nullable: true
+              example: "ap22"
+            cep:
+              type: string
+              example: "21073090"
+            cidade:
+              type: string
+              example: "Rio de Janeiro"
+            estado:
+              type: string
+              enum:
+              - AC
+              - AL
+              - AP
+              - AM
+              - BA
+              - CE
+              - DF
+              - ES
+              - GO
+              - MA
+              - MT
+              - MS
+              - MG
+              - PA
+              - PB
+              - PR
+              - PE
+              - PI
+              - RJ
+              - RN
+              - RS
+              - RO
+              - RR
+              - SC
+              - SP
+              - SE
+              - TO
+              example: "RJ"
+        vencimentoDaFatura:
+          type: number
+          example: 5
+        transacao: 
+          type: object
+          properties: 
+            id: 
+              type: string
+              example: '649c86a6a7797f8841511dd4'
+            valor: 
+              type: number
+              example: 50000
