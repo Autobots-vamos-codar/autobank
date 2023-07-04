@@ -9,6 +9,8 @@ servers:
 tags:
   - name: transactions
     description: Rotas para manipular transações
+  - name: accounts
+    description: Rotas para accounts
 paths:
   /api/admin/transactions:
     get:
@@ -78,11 +80,6 @@ paths:
           required: true
           schema:
             type: string
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: ok
@@ -136,6 +133,30 @@ paths:
           description: ok
         '401':
           description: Unauthorized
+
+  /api/accounts/login:
+    post:
+      tags:
+        - accounts
+      summary: Login in API
+      description: Return the login token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        '204':
+          description: NoContent
+        '400':
+          description: invalid data
+        '401':
+          description: unauthorized transaction 
+        '500':
+          description: server error, data not sent
+        '404':
+          description: customer not found
+
 components:
   schemas:
     Transaction:
@@ -165,4 +186,11 @@ components:
         numero:
           type: string
         cvc:
+          type: string
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+        senha:
           type: string
