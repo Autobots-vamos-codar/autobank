@@ -36,12 +36,6 @@ paths:
         - Anti-fraude
       summary: Adicionar anti-fraude
       description: criar uma analise anti-fraude com status 'Em análise' como default
-      parameters:
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-          required: true
       requestBody:
         content:
           application/json:
