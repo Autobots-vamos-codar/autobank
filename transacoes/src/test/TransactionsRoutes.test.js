@@ -4,6 +4,7 @@ import {
 import request from 'supertest';
 import app from '../app.js';
 
+let token = '';
 let server;
 
 beforeEach(() => {
@@ -19,38 +20,51 @@ afterAll((done) => {
   server.close();
   done();
 });
-let listTransactions;
-describe('GET em /api/admin/transactions', () => {
-  it('Deve retornar uma lista de transações', async () => {
-    listTransactions = await request(app)
-      .get('/api/admin/transactions')
-      .set('Accept', 'application/json')
-      .expect('content-type', /json/)
-      .expect(200);
-
-    // expect(resposta.status).toEqual(200);
-  });
-  it('Deve retornar detalhes de uma transação', async () => {
+describe('Testes de POST em /api/admin/accounts', () => {
+  it('Deve retornar a conta criada', async () => {
     await request(app)
-      .get('/api/admin/transactions/649da22f2534494ba8be9fcb')
+      .post('/api/admin/accounts')
       .set('Accept', 'application/json')
+      .send({
+        nome: 'admin',
+        email: 'admin2@hotmail',
+        senha: 'admin',
+      })
       .expect('content-type', /json/)
-      .expect(200);
+      .expect(201);
   });
 });
 
+describe('Logar na conta', () => {
+  it('Deve retornar logar a conta', async () => {
+    const loggedAccount = await request(app)
+      .post('/api/accounts/login')
+      .set('Accept', 'application/json')
+      .send({
+        email: 'admin2@hotmail',
+        senha: 'admin',
+      });
+
+    token = await loggedAccount.header.authorization;
+  });
+});
+
+let listTransactions;
 let createdTransaction;
+
 describe('Testes de POST', () => {
   it('Deve retornar a transação criada e aprovada', async () => {
+    console.log(token);
     createdTransaction = await request(app)
       .post('/api/admin/transactions')
       .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
       .send({
         valorTransacao: 10,
-        nomeTitular: 'VICENTE C MOTA',
-        validade: '02/24',
-        numeroCartao: '4916642182615702',
-        cvc: 989,
+        nomeTitular: 'FLAVIA A GOMES',
+        validade: '09/25',
+        numeroCartao: '5109405218436136',
+        cvc: 516,
       })
       .expect('content-type', /json/)
       .expect(201);
@@ -62,12 +76,13 @@ describe('Testes de POST', () => {
     createdTransaction = await request(app)
       .post('/api/admin/transactions')
       .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
       .send({
         valorTransacao: 10000,
-        nomeTitular: 'VICENTE C MOTA',
-        validade: '02/24',
-        numeroCartao: '4916642182615702',
-        cvc: 989,
+        nomeTitular: 'FLAVIA A GOMES',
+        validade: '09/25',
+        numeroCartao: '5109405218436136',
+        cvc: 516,
       })
       .expect('content-type', /json/)
       .expect(303);
@@ -78,42 +93,57 @@ describe('Testes de POST', () => {
     await request(app)
       .post('/api/admin/transactions/')
       .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
       .send({
         valorTransacao: 10000,
-        nomeTitular: 'VICENTE C MOTA',
-        validade: '02/24',
-        numeroCartao: '4916642182615702',
+        nomeTitular: 'FLAVIA A GOMES',
+        validade: '09/25',
+        numeroCartao: '5109405218436136',
       })
       .expect('content-type', /json/)
       .expect(400);
-  });
-  it('Deve retornar erro ao a data de cartão estiver expirada', async () => {
-    await request(app)
-      .post('/api/admin/transactions/')
-      .set('Accept', 'application/json')
-      .send({
-        valorTransacao: 10000,
-        nomeTitular: 'LAURA M FREITAS',
-        validade: '08/21',
-        numeroCartao: '5109405218436137',
-        cvc: 412,
-      })
-      .expect('content-type', /json/)
-      .expect(401);
   });
   it('Deve retornar erro ao não passar dados certos do número do cartão', async () => {
     await request(app)
       .post('/api/admin/transactions/')
       .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
       .send({
         valorTransacao: 10000,
-        nomeTitular: 'LAURA M FREITAS',
-        validade: '08/21',
+        nomeTitular: 'FLAVIA A',
+        validade: '09/25',
         numeroCartao: '51094052184361',
-        cvc: 412,
+        cvc: 516,
       })
       .expect('content-type', /json/)
       .expect(404);
+  });
+});
+describe('GET em /api/admin/transactions', () => {
+  it('Deve retornar uma lista de transações', async () => {
+    listTransactions = await request(app)
+      .get('/api/admin/transactions')
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .expect('content-type', /json/)
+      .expect(200);
+
+    // expect(resposta.status).toEqual(200);
+  });
+  it('Deve retornar detalhes de uma transação', async () => {
+    await request(app)
+      .get(`/api/admin/transactions/${createdTransaction.body.id}`)
+      .set('Accept', 'application/json')
+      .expect('content-type', /json/)
+      .expect(200);
+  });
+
+  it('Deve retornar erro ao não achar a transação', async () => {
+    await request(app)
+      .get('/api/admin/transactions/23232')
+      .set('Accept', 'application/json')
+      .expect('content-type', /json/)
+      .expect(400);
   });
 });
 

@@ -11,7 +11,9 @@ async function criaTokenJWT(email) {
     id: user.id,
   };
 
-  const token = jwt.sign(payload, process.env.CHAVE_JWT, { expiresIn: '15m' });
+  const chaveJWTDev = 'Re7jpi9szEyUO02CbaHgarVyYq2N/HEXG/MWGmJAYN8E26IdcsyHvYEdhd7b7DV1SCj5GWdFbZ0Nla1cnZDrJQNrKbRQ6JvNymXYklHpPdRSkfweRRfoWPu9PUxksDQdcjDS7gvIs81Ta+qt82eLkSYOLhJK6KSnzzY+0GBdv04bHwC95Rpkk3cyc9uG5HSxYM/ekJW/T03+VZJS56DGxiVq5/6FSr8C+MtHhZ0s669b4Sek24c2Lq3DduHlNX3D2WLsWuWDvzeIQzskBd9Aq7lLHTacD7bzgsa4mCCncgfRFDAnR6+NBTA44Eb2sYxeN5alJfCmbTm62EzXy6MEKA==';
+
+  const token = jwt.sign(payload, process.env.CHAVE_JWT || chaveJWTDev, { expiresIn: '15m' });
   return token;
 }
 
