@@ -68,7 +68,7 @@ async function validateUserCardBody(userData) {
     }
     const validateData = validExpirationDate(userData.validade);
     if (validateData === false) {
-      return { status: 401, message: 'Cartão expirado' };
+      return { status: 401, message: 'rejeitado' };
     }
     const validData = validUserData(userData.nomeTitular, userData.cvc, userData.validade, isUserDataValid);
     if (validData === false) {
