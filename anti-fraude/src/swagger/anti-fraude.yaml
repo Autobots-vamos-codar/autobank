@@ -9,6 +9,8 @@ servers:
 paths:
   /api/antiFraud:
     get:
+      security:
+        - bearerAuth: []
       summary: list Antifraud
       description: list all antifraud
       responses:
@@ -39,6 +41,8 @@ paths:
           description: error
   /api/antiFraud/under-review:
     get:
+      security:
+        - bearerAuth: []
       summary: list Antifraud with status under review
       description: list antifraud with status under review
       responses:
@@ -52,6 +56,8 @@ paths:
                   $ref: "#/components/schemas/AntiFraud"
   /api/antiFraud/{id}:
     get:
+      security:
+        - bearerAuth: []
       summary: Find antifraud by id
       description: Find one specific antifraud
       parameters:
@@ -73,6 +79,8 @@ paths:
         '500':
           description: error
     patch:
+      security:
+        - bearerAuth: []
       summary: Update antifraud status
       description: Update antifraud by status under-review to approved or rejected
       parameters:
@@ -99,6 +107,8 @@ paths:
         '500':
           description: error
     delete:
+      security:
+        - bearerAuth: []
       summary: Delete antifraud
       description: Delete antifraud by entering its ID
       parameters:
@@ -128,3 +138,8 @@ components:
           type: string
         status:
           type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
