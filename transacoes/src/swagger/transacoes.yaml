@@ -1,14 +1,19 @@
 openapi: 3.0.3
 info:
-  title: Clientes API
+  title: Transações API
   description: |-
-    API do microsserviço de Clientes
+    API de transações
   version: 0.0.1
 servers:
   - url: http://localhost:3002
+tags:
+  - name: transactions
+    description: Rotas para manipular transações
 paths:
   /api/admin/transactions:
     get:
+      tags:
+        - transactions
       summary: List transactions
       description: List all transactions
       parameters:
@@ -27,6 +32,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/Transaction"
     post:
+      tags:
+        - transactions
       summary: Add transaction
       description: Add new transaction
       parameters:
@@ -60,6 +67,8 @@ paths:
 
   /api/admin/transactions/{id}:
     get:
+      tags:
+          - transactions
       summary: Find transaction
       description: Find one specific transaction
       parameters:
@@ -86,6 +95,8 @@ paths:
         '404':
           description: not found
     put:
+      tags:
+        - transactions
       summary: Update transaction status
       description: Update transaction status by a new status on query
       parameters:
@@ -108,7 +119,23 @@ paths:
           description: invalid id or status
         '401':
           description: unauthorized
-    
+  
+  /api/admin/ping:
+    get:
+      tags:
+          - transactions
+      summary: Verify connection and token
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: ok
+        '401':
+          description: Unauthorized
 components:
   schemas:
     Transaction:
