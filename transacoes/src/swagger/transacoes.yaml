@@ -14,16 +14,12 @@ tags:
 paths:
   /api/admin/transactions:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - transactions
       summary: List transactions
       description: List all transactions
-      parameters:
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: ok
@@ -34,16 +30,12 @@ paths:
                 items:
                   $ref: "#/components/schemas/Transaction"
     post:
+      security:
+        - bearerAuth: []
       tags:
         - transactions
       summary: Add transaction
       description: Add new transaction
-      parameters:
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-          required: true
       requestBody:
         content:
           application/json:
@@ -119,15 +111,11 @@ paths:
   
   /api/admin/ping:
     get:
+      security:
+        - bearerAuth: []
       tags:
           - transactions
       summary: Verify connection and token
-      parameters:
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: ok
@@ -194,3 +182,8 @@ components:
           type: string
         senha:
           type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
