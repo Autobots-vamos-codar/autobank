@@ -2,6 +2,22 @@
 import fetch from 'node-fetch';
 import AntiFraud from '../models/AntiFraud.js';
 
+async function validarTransactionId(idTrasacao) {
+  const responseTransacao = await fetch(`http://${process.env.TRANSACOES_HOST || '127.0.0.1'}:3002/api/admin/transactions/${idTrasacao}`);
+
+  if (responseTransacao.status === 404) {
+    throw new Error('Transação não encontrada.');
+  }
+}
+
+async function validarClientId(idCliente) {
+  const responseClient = await fetch(`http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients/${idCliente}`);
+
+  if (responseClient.status === 404) {
+    throw new Error('Cliente não encontrado.');
+  }
+}
+
 async function validarStatus(antiFraud, novoStatus) {
   const statusAtual = antiFraud.status;
 
@@ -58,7 +74,7 @@ class AntiFraudController {
         
         const responseTransacao = await fetch(`http://${process.env.TRANSACOES_HOST || '127.0.0.1'}:3002/api/admin/transactions/${transactionId}`);
         const transacoes = await responseTransacao.json();
-              
+        
         const retorno = {
           _id: findById.id,
           status: findById.status,
@@ -80,10 +96,14 @@ class AntiFraudController {
 
   static createAntiFraud = async (req, res) => {
     try {
-      const infoAntiFraude = { ...req.body, status: 'em análise' };
-      const novaAntifraude = new AntiFraud(infoAntiFraude);
+      const infoAntiFraude = { clientId: req.body.clientId, transactionId: req.body.transactionId, status: 'em análise' };
 
+      await validarClientId(req.body.clientId);
+      await validarTransactionId(req.body.transactionId);
+
+      const novaAntifraude = new AntiFraud(infoAntiFraude);
       await novaAntifraude.save();
+      
       res.status(201).json(novaAntifraude);
     } catch (err) {
       res.status(500).send({ message: err.message });
