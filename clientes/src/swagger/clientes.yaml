@@ -141,7 +141,7 @@ paths:
           description: invalid ID supplied
         '404':
           description: not found
-  /api/admin/clients:
+  /api/admin/card:
     post:
       tags:
         - clients

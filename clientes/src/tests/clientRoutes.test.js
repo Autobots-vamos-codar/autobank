@@ -18,6 +18,30 @@ const validId = '649ed1a4badaa158ab5f402c';
 const fakeId = '55958602cdf53bd1574754a1';
 const invalidId = '1234';
 
+const postBodyCreate = {
+  dadosPessoais: {
+    nome: 'Flávia Andrea Rita Gomes',
+    cpf: '41953330835',
+    email: 'flavia-gomes74@alkbrasil.com.br',
+    telefone: '3137337860',
+    rendaMensal: 10750,
+  },
+  endereco: {
+    rua: 'Rua José Pedro Machado',
+    numero: 260,
+    complemento: 'ap22',
+    cep: '35930727',
+    cidade: 'João Monlevade',
+    estado: 'MG',
+  },
+  dadosCartao: {
+    numeroCartao: '5109405218436136',
+    validade: '09/25',
+    cvc: 516,
+    diaVencimentoFatura: 25,
+    nomeTitular: 'FLAVIA A GOMES',
+  },
+};
 const postBodyValid = {
   numeroCartao: '5109405218436136',
   validade: '09/25',
@@ -47,6 +71,15 @@ const postBodyInvalidNumberCard = {
   valorTransacao: 500,
 };
 
+describe('POST em /api/admin/clients', () => {
+  it('Deve adicionar um novo cliente', async () => {
+    await request(app)
+      .post('/api/admin/clients')
+      .send(postBodyCreate)
+      .expect(201);
+  });
+});
+
 describe('GET em /api/admin/clients/id', () => {
   it('Deve retornar o cliente selecionado', async () => {
     await request(app)
@@ -67,28 +100,28 @@ describe('GET em /api/admin/clients/id', () => {
   });
 });
 
-describe('POST em /api/admin/clients', () => {
+describe('POST em /api/admin/card', () => {
   it('Deve retornar status 200', async () => {
     await request(app)
-      .post('/api/admin/clients')
+      .post('/api/admin/card')
       .send(postBodyValid)
       .expect(200);
   });
   it('Deve retornar status 401', async () => {
     await request(app)
-      .post('/api/admin/clients')
+      .post('/api/admin/card')
       .send(postBodyDateInvalid)
       .expect(401);
   });
   it('Deve retornar status 400', async () => {
     await request(app)
-      .post('/api/admin/clients')
+      .post('/api/admin/card')
       .send(postBodyInvalidProperty)
       .expect(400);
   });
   it('Deve retornar status 404', async () => {
     await request(app)
-      .post('/api/admin/clients')
+      .post('/api/admin/card')
       .send(postBodyInvalidNumberCard)
       .expect(404);
   });

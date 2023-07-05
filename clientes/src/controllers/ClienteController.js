@@ -1,6 +1,11 @@
 import ClienteService from '../services/clientService.js';
 
 class ClienteController {
+  static createClient = async (req, res) => {
+    const novaCliente = await ClienteService.processCliente(req);
+    res.status(novaCliente.status).send(novaCliente.message);
+  };
+
   static getUserDataWithoutAccount = async (req, res) => {
     const { id } = req.params;
     const userData = await ClienteService.getUserDataWithoutAccount(id);

@@ -19,7 +19,7 @@ class TransactionService {
   static async requireIDAndIncome(datasOfTransaction) {
     console.log(datasOfTransaction);
     try {
-      const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/clients`;
+      const url = `http://${process.env.CLIENTS_HOST || '127.0.0.1'}:3001/api/admin/card`;
       // console.log(url);
       const reqIDToServiceClient = await fetch(url, {
         method: 'POST',

@@ -1,9 +1,15 @@
 /* eslint-disable eqeqeq */
+
 /* eslint-disable max-len */
+
 /* eslint-disable consistent-return */
+
 /* eslint-disable no-unreachable */
+
 /* eslint-disable no-undef */
+
 /* eslint-disable no-underscore-dangle */
+
 import Client from '../models/Client.js';
 
 function validExpirationDate(validity) {
@@ -13,7 +19,6 @@ function validExpirationDate(validity) {
   const validityDate = new Date(yearString, monthString);
   const cardExpiryYear = validityDate.getFullYear() + 100;
   const cardExpiryMonth = validityDate.getMonth();
-
   const getActualDate = new Date();
   const actualYear = getActualDate.getFullYear();
   const actualMonth = getActualDate.getMonth() + 1;
@@ -66,10 +71,12 @@ async function validateUserCardBody(userData) {
     if (isUserDataValid === null) {
       return { status: 404, message: 'cliente não encontrado' };
     }
+
     const validateData = validExpirationDate(userData.validade);
     if (validateData === false) {
       return { status: 401, message: 'rejeitado' };
     }
+
     const validData = validUserData(userData.nomeTitular, userData.cvc, userData.validade, isUserDataValid);
     if (validData === false) {
       return { status: 400, message: 'rejeitado' };
@@ -85,7 +92,29 @@ async function validateUserCardBody(userData) {
     return { status: 500, message: error.message };
   }
 }
+
 class ClienteService {
+  static processCliente = async (req) => {
+    try {
+      // const dadosCartao = await criptografarDados(req.body.dadosCartao);
+
+      // req.body.dadosCartao = dadosCartao;
+
+      const cliente = new Client({
+        dadosPessoais: req.body.dadosPessoais,
+        endereco: req.body.endereco,
+        dadosCartao: req.body.dadosCartao,
+        createdDate: Date(),
+      });
+
+      await cliente.save();
+
+      return { status: 201, message: cliente };
+    } catch (error) {
+      return { status: 500, message: error.message };
+    }
+  };
+
   static getUserDataWithoutAccount = async (id) => {
     try {
       const isUserExistent = await Client.findById(id);
