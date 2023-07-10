@@ -63,29 +63,22 @@ const clientSchema = new mongoose.Schema(
     dadosCartao: {
       numeroCartao: {
         type: String,
-        minLenght: 13,
-        maxLenght: 16,
         required: true,
       },
       nomeTitular: {
         type: String,
-        match: /^[A-Za-z ]{5,}$/,
         required: true,
       },
       validade: {
         type: String,
-        match: /^\d{2}\/\d{2}$/,
         required: true,
       },
       cvc: {
-        type: Number,
-        match: /^\d{3}$/,
+        type: String,
         required: true,
       },
       diaVencimentoFatura: {
-        type: Number,
-        min: 1,
-        max: 31,
+        type: String,
         required: true,
       },
     },

@@ -11,6 +11,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import Client from '../models/Client.js';
+import { encrypt, decrypt } from '../cripto.js';
 
 function validExpirationDate(validity) {
   const separateValidity = validity.split('/');
@@ -96,9 +97,16 @@ async function validateUserCardBody(userData) {
 class ClienteService {
   static processCliente = async (req) => {
     try {
-      // const dadosCartao = await criptografarDados(req.body.dadosCartao);
+      const dadosCartao = req.body.dadosCartao;
 
-      // req.body.dadosCartao = dadosCartao;
+      const encryptedDataPromises = Object.keys(dadosCartao).map(async (key) => {
+        const dadoCifrado = await encrypt(dadosCartao[key]);
+        return [key, dadoCifrado];
+      });
+
+      const encryptedDataArray = await Promise.all(encryptedDataPromises);
+      const encryptedData = Object.fromEntries(encryptedDataArray);
+      req.body.dadosCartao = encryptedData;
 
       const cliente = new Client({
         dadosPessoais: req.body.dadosPessoais,
@@ -121,6 +129,16 @@ class ClienteService {
       if (isUserExistent === null) {
         return { status: 404, message: 'cliente não encontrado' };
       }
+
+      const decryptedDataPromises = Object.keys(isUserExistent.dadosCartao).map(async (key) => {
+        const dadoDeciifrado = await decrypt(isUserExistent.dadosCartao[key]);
+        return [key, dadoDeciifrado];
+      });
+
+      const decryptedDataArray = await Promise.all(decryptedDataPromises);
+      const decryptedData = Object.fromEntries(decryptedDataArray);
+      isUserExistent.dadosCartao = decryptedData;
+
       const clientData = {
         dadosPessoais: isUserExistent.dadosPessoais,
         Endereco: isUserExistent.endereco,
