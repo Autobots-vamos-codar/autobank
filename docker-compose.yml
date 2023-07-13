@@ -1,6 +1,18 @@
 # docker-compose up --force-recreate --build
 version: "3.9"
 services:
+  api-gateway:
+    image: nginx
+    volumes:
+      - ./servicos-nginx:/etc/nginx/conf.d
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - anti-fraude
+      - clientes
+      - transacoes
+
   anti-fraude:
     build: anti-fraude
     container_name: anti-fraude
