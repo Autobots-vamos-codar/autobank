@@ -1,4 +1,4 @@
-import ClienteService from '../services/clientService.js';
+import ClienteService from "../services/clientService.js";
 
 class ClienteController {
   static createClient = async (req, res) => {
