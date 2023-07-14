@@ -1,18 +1,6 @@
 # docker-compose up --force-recreate --build
 version: "3.9"
 services:
-  api-gateway:
-    image: nginx
-    volumes:
-      - ./servicos-nginx:/etc/nginx/conf.d
-    restart: always
-    ports:
-      - 8080:80
-    depends_on:
-      - anti-fraude
-      - clientes
-      - transacoes
-
   anti-fraude:
     build: anti-fraude
     container_name: anti-fraude
@@ -22,6 +10,7 @@ services:
       CLIENTS_HOST: clientes
       TRANSACOES_HOST: transacoes
       MONGO_HOST: mongo-anti-fraude
+      RABBIT_HOST: rabbitmq
     depends_on:
       - mongo-anti-fraude
 
@@ -45,6 +34,7 @@ services:
       ANTI_FRAUDE_HOST: anti-fraude
       MONGO_HOST: mongo-anti-fraude
       MONGO_PORT: 27017
+      RABBIT_HOST: rabbitmq
     depends_on:
       - mongo-anti-fraude
 
@@ -59,6 +49,39 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: secret
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./dados:/var/lib/rabbitmq/
+    environment:
+      - RABBITMQ_DEFAULT_USER=adm
+      - RABBITMQ_DEFAULT_PASS=adm
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  api-gateway:
+    image: nginx
+    volumes:
+      - ./servicos-nginx:/etc/nginx/conf.d
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - anti-fraude
+      - clientes
+      - transacoes
 
 volumes:
   vol-mongo-anti-fraude:
