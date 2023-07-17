@@ -110,6 +110,69 @@ async function validarStatus(antiFraud, novoStatus) {
   }
 }
 
+async function gerarHateos(objeto, req) {
+  const links = [];
+
+  if (
+    objeto.status.toLowerCase() === "aprovada" ||
+    objeto.status.toLowerCase() === "rejeitada"
+  ) {
+    links.push({
+      rel: "self",
+      href: `http://localhost:3000/api/antiFraud/${objeto._id}`,
+      method: "GET",
+      Authorization: req.headers.authorization,
+    });
+    links.push({
+      rel: "vizualizar todas as análises",
+      href: `http://localhost:3000/api/antiFraud`,
+      method: "GET",
+      Authorization: req.headers.authorization,
+    });
+    links.push({
+      rel: "vizualizar todas as análises com status 'Em análise'",
+      href: `http://localhost:3000/api/antiFraud/under-review`,
+      method: "GET",
+      Authorization: req.headers.authorization,
+    });
+  } else if (objeto.status.toLowerCase() === "em análise") {
+    links.push({
+      rel: "self",
+      href: `http://localhost:3000/api/antiFraud/${objeto._id}`,
+      method: "GET",
+      Authorization: req.headers.authorization,
+    });
+    links.push({
+      rel: "vizualizar todas as análises",
+      href: `http://localhost:3000/api/antiFraud`,
+      method: "GET",
+      Authorization: req.headers.authorization,
+    });
+    links.push({
+      rel: "vizualizar todas as análises com status 'Em análise'",
+      href: `http://localhost:3000/api/antiFraud/under-review`,
+      method: "GET",
+      Authorization: req.headers.authorization,
+    });
+    links.push({
+      rel: "aprovar",
+      href: `http://localhost:3000/api/antiFraud/${objeto._id}`,
+      body: { status: "aprovada" },
+      method: "PATCH",
+      Authorization: req.headers.authorization,
+    });
+    links.push({
+      rel: "rejeitar",
+      href: `http://localhost:3000/api/antiFraud/${objeto._id}`,
+      body: { status: "rejeitada" },
+      method: "PATCH",
+      Authorization: req.headers.authorization,
+    });
+  }
+
+  return links;
+}
+
 class AntiFraudController {
   static findAllAntiFraud = async (_req, res) => {
     try {
@@ -149,6 +212,8 @@ class AntiFraudController {
       if (!findById) {
         res.status(400).send({ message: "Anti fraude nao encontrada" });
       } else {
+        const links = await gerarHateos(findById, req);
+
         const responseClient = await fetch(
           `http://${
             process.env.CLIENTS_HOST || "127.0.0.1"
@@ -176,6 +241,7 @@ class AntiFraudController {
           vencimentoDaFatura: accounts.vencimentoDaFatura,
           // eslint-disable-next-line no-underscore-dangle
           transacao: { _id: transacoes._id, valor: transacoes.valor },
+          links: links,
         };
 
         res.status(200).json(retorno);
@@ -199,7 +265,17 @@ class AntiFraudController {
       const novaAntifraude = new AntiFraud(infoAntiFraude);
       await novaAntifraude.save();
 
-      res.status(201).json(novaAntifraude);
+      const links = await gerarHateos(novaAntifraude, req);
+
+      const resAntiFraude = {
+        clientId: novaAntifraude.clientId,
+        transactionId: novaAntifraude.transactionId,
+        status: novaAntifraude.status,
+        id: novaAntifraude._id,
+        links: links,
+      };
+
+      res.status(201).json(resAntiFraude);
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
