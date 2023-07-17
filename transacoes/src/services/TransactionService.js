@@ -136,8 +136,9 @@ class TransactionService {
       nomeTitular: datasTransaction.nomeTitular,
       clientId: idUser,
     };
-    await this.saveTransaction(dataTransaction);
-    return { status: "Aprovada", idUser, statusResponse: 201 };
+    const saved = await this.saveTransaction(dataTransaction);
+    const { _id } = saved;
+    return { saved, id: _id, statusResponse: 201 };
   }
 
   static async processUnderReviewTransaction(datasOfTrasaction, idUser) {
